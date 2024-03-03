@@ -1,0 +1,84 @@
+{% extends 'layout.html' %}
+
+{% block title %}Registro Paciente{% endblock %}
+
+{% block body %}
+<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/anada.css') }}"> -->
+
+<!-- Navbar -->
+<!-- <nav class="navbar"> -->
+
+  <!-- Enlaces de navegacion -->
+
+  <!-- <div class="nav-items">
+      <a class="nav-item" href="/">Especialistas</a>
+      <a class="nav-item" href="/">Comidas</a>
+  </div> -->
+
+  <!-- //
+</div>
+</nav>
+
+  <!-- Static title -->
+  <a href="{{ url_for('index.registro') }}">Volver</a>
+  <h1>Registro</h1>
+  <!-- // -->
+
+    <!-- Action form -->
+    <form action="{{ url_for('paciente.registro') }}" method="POST" class="form-control">
+        
+        <div class="Paciente Info">
+        <label>Primer Nombre</label>
+        <input type="text" id="pac-pri-nombre" name="pac-pri-nombre" placeholder="Primer nombre" required>
+        
+        <label>Segundo Nombre</label>
+        <input type="text" id="pac-seg-nombre" name="pac-seg-nombre" placeholder="Segundo nombre">      
+        
+        <label>Primer Apellido</label>
+        <input type="text" id="pac-pri-apellido" name="pac-pri-apellido" placeholder="Primer apellido" required>
+        
+        <label>Segundo Apellido</label>
+        <input type="text" id="pac-seg-apellido" name="pac-seg-apellido" placeholder="Segundo apellido" required>
+        
+        <div class="form-group">
+            <label>Género</label>
+            <div requiere>
+            <label><input type="radio" name="pac-sexo" value="M">Hombre</label><br>
+            <label><input type="radio" name="pac-sexo" value="F">Mujer</label><br>
+            <label><input type="radio" name="pac-sexo" value="O">Prefiero no decirlo</label><br>
+            </div>
+        </div>
+        
+        <label>Correo Electrónico</label>
+        <input type="email" id="pac-correo" name="pac-correo" placeholder="Correo electrónico" required>
+        
+        <label>Teléfono</label>
+        <input type="tel" id="pac-telefono" name="pac-telefono" placeholder="Teléfono" required>
+        
+        <label>Contraseña</label>
+        <input type="password" id="pac-clave" name="pac-clave" placeholder="Contraseña" required>
+        
+        <label>Fecha de Nacimiento</label>
+        <input type="date" id="pac-fecha-nacimiento" name="pac-fecha-nacimiento" placeholder="Fecha de nacimiento" required>      
+        </div>
+        
+        <!-- Boton -->
+        <div class="button-container">
+            <button class="submit-btn" type="submit">Aceptar</button>
+        </div>
+        <!-- // -->
+
+    </form>
+
+    <a href="/#">Al continuar acepta nuestros terminos y condiciones.</a>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            var sexo = document.querySelector('input[name="pac-sexo"]:checked');
+            if (!sexo) {
+                alert('Por favor, selecciona una opción de género.');
+                event.preventDefault();
+            }
+        });
+    </script>
+{% endblock body %}

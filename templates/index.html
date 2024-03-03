@@ -1,0 +1,15 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block body %}
+  <!-- Text Area -->
+    <h1>Bienvenido</h1>
+    <h4>Descubre un camino hacia una alimentación saludable y equilibrada. Aprende a nutrir tu cuerpo de manera consciente, alcanza un bienestar integral</h4>
+
+    <!-- Buttons -->
+    <a href="{{ url_for('index.login') }}">Iniciar Sesion</a>
+    <a href="{{ url_for('index.registro') }}">Registrarse</a>
+
+{% endblock %}

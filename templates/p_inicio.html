@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block title %}Home Paciente{% endblock %}
+
+{% block body %}
+
+<h1>Mis comidas</h1>
+<h3>{{ formatted_date }}</h3>
+<a href="{{ url_for('paciente.perfil', id=id.id_paciente)}}">Perfil</a>
+
+<!-- Barra de buscador -->
+<form action="{{url_for('paciente.inicio', id=id.id_paciente)}}" method="POST">
+        <input type="text" placeholder="Agust, 23 2023" name="pac-fecha" required>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+<!-- // -->
+
+<!-- Resultados de busqueda -->
+<ul>
+    {{ formatted_fecha }}
+    {% for comida in comi %}
+      <li>
+        {% if comida.tipo == "d" %}
+            <span>Desayuno</span>
+        {% endif %}
+        {% if comida.tipo == "a" %}
+            <span>Almuerzo</span>
+        {% endif %}
+        {% if comida.tipo == "c" %}
+            <span>Cena</span>
+        {% endif %}
+        {% if comida.tipo == "m" %}
+            <span>Merienda</span>
+        {% endif %}
+
+        <a href="/#">></a> 
+        <a href="/#">update</a> 
+        <a href="/#">delete</a>
+    </li>
+    {% endfor %}
+</ul>
+<!-- // -->
+
+<h1>---Borrar---</h1>
+
+<!-- data from the person -->
+<p>{{id.pri_nombre}}</p>
+<p>{{id.id_paciente}}</p>
+<h1>Paciente</h1>
+<!-- // -->
+
+{% endblock %}

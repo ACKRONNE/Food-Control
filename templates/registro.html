@@ -1,0 +1,17 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}Tipo Usuario{% endblock %}
+
+{% block body %}
+  <!-- Text Area -->
+    <a href="{{ url_for('index.index') }}">Volver</a>
+    <h1>Registro</h1>
+
+    <h1>Soy un</h1>
+
+    <!-- Buttons -->
+    <a href="{{ url_for('paciente.registro') }}">paciente</a>
+    <a href="{{ url_for('paciente.registro') }}">especialista</a>
+
+{% endblock %}
