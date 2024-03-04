@@ -49,7 +49,7 @@ def login():
                 _id = session['id']
                 return redirect(url_for('especialista.inicio', id=_id))
             else:
-                return render_template('index.html', mensaje = 'El usuario no se encuentra registrado o la contraseña es incorrecta')
+                return render_template('login.html', mensaje = 'El usuario no se encuentra registrado o la contraseña es incorrecta')
 
     else:
         return render_template('login.html')

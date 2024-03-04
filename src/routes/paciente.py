@@ -5,6 +5,7 @@ from src.database.db import db
 from datetime import datetime
 
 # Entidades
+from src.models.especialista import Especialista
 from src.models.hist_comida import HistComida
 from src.models.alimento import Alimento
 from src.models.paciente import Paciente
@@ -188,7 +189,7 @@ def updateProfile(id):
     return render_template('p_editar_perfil.html', paciente=paciente)
 # // >
 
-# Agregar Comida <
+# Agregar Comida < FIXME:
 @pac.route('/agregar_comida/<id>/<date>', methods=['GET', 'POST'])
 def addFood(id, date):
 
@@ -238,4 +239,24 @@ def addFood(id, date):
         return redirect(url_for('paciente.inicio', id=id))
     
     return render_template('p_agregar_comida.html', id=id, date=date)
+# // >
+
+# Ver Especialistas <
+@pac.route('/ver_especialistas/<id>', methods=['GET'])
+def especialistas(id):
+    
+    date = datetime.now()
+    date = date.strftime("%b, %d %Y")
+
+    result = db.session.query(
+        Especialista.pri_nombre, 
+        Especialista.pri_apellido, 
+        Especialista.especialidad,
+    ).join(
+        Comida, Especialista.id_espe == Comida.id_espe
+    ).filter(
+        Comida.id_paciente == id
+    ).distinct()
+
+    return render_template('p_especialistas.html', id=id, result=result, date=date)
 # // >

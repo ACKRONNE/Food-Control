@@ -3,6 +3,11 @@
 {% block title %}Home Paciente{% endblock %}
 
 {% block body %}
+ 
+    <!-- FIXME: Borrer esto -->
+        <a href="{{url_for('paciente.especialistas', id=result.id_paciente)}}">Especialistas</a> 
+        <a href="/#">Agregar Comida</a>
+    <!-- FIXME: Hasta aqui -->
 
 <h1>Mis comidas</h1>
 <h3>{{ formatted_date }}</h3>
