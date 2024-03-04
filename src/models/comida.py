@@ -11,8 +11,8 @@ class Comida(db.Model):
 
   __table_args__ = (
       CheckConstraint(tipo.in_(['D', 'A', 'C', 'M']), name='check_tipo'),
-      ForeignKeyConstraint(['id_paciente'], ['pacientes.id_paciente']),
-      ForeignKeyConstraint(['id_espe'], ['especialistas.id_espe']),
+      ForeignKeyConstraint(['id_paciente'], ['pacientes.id_paciente'], ondelete='CASCADE'),
+      ForeignKeyConstraint(['id_espe'], ['especialistas.id_espe'], ondelete='CASCADE'),
       PrimaryKeyConstraint('id_paciente', 'id_espe', 'id_comida'),
   )
   

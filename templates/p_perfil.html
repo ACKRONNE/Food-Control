@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block title %}Profile Paciente{% endblock %}
+
+{% block body %}
+
+    <!-- FIXME: Falta update y delete -->
+
+    <a href="{{ url_for('paciente.inicio', id=paciente.id_paciente) }}">Volver</a>
+
+        <p>Nombre {{paciente.pri_nombre}} {{paciente.seg_nombre}}</p>
+        <p>Apellidos {{paciente.pri_apellido}} {{paciente.seg_apellido}}</p>
+        <p>Sexo 
+            {% if paciente.sexo == "F" %}
+            Femenino
+            {% elif paciente.sexo == "M" %}
+                Masculino
+            {% elif paciente.sexo == "O" %}
+                Otro
+            {% endif %}
+        </p>
+        <p>Correo {{paciente.correo}}</p> 
+        <p>Telefono {{paciente.telefono}}</p> 
+        <p>Edad {{paciente.fecha_nacimiento}}</p>
+        <p>Clave *******</p> 
+
+
+        <a href="{{ url_for('paciente.updateProfile', id=paciente.id_paciente) }}">Editar Perfil</a>
+        <form action="{{ url_for('paciente.deleteAccount', id=paciente.id_paciente) }}" method="post">
+            <input type="submit" value="Eliminar Cuenta">
+        </form>
+{% endblock %}

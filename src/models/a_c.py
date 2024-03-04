@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Numeric, PrimaryKeyConstraint, ForeignKeyConstraint
 from src.database.db import db
 
-class A_C(db.Model):
+class AC(db.Model):
   __tablename__ = 'a_c'
   
   id_paciente = Column(Numeric(3))
@@ -11,8 +11,8 @@ class A_C(db.Model):
   id_alimento = Column(Numeric(3))
 
   __table_args__ = (
-      ForeignKeyConstraint(['id_paciente', 'id_espe', 'id_comida'], ['comidas.id_paciente', 'comidas.id_espe', 'comidas.id_comida']),
-      ForeignKeyConstraint(['id_alimento'], ['alimentos.id_alimento']),
+      ForeignKeyConstraint(['id_paciente', 'id_espe', 'id_comida'], ['comidas.id_paciente', 'comidas.id_espe', 'comidas.id_comida'], ondelete='CASCADE'),
+      ForeignKeyConstraint(['id_alimento'], ['alimentos.id_alimento'], ondelete='CASCADE'),
       PrimaryKeyConstraint('id_paciente', 'id_espe', 'id_comida', 'id_alimento'),
   )
   

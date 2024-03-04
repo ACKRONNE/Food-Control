@@ -10,19 +10,19 @@ from src.models.especialista import Especialista
 
 ind = Blueprint('index', __name__)
 
-# Pagina principal
+# Pagina principal <
 @ind.route('/')
 def index():
     return render_template('index.html')
-# //
+# // >
 
-# Tipo de usuario
+# Tipo de usuario <
 @ind.route('/registro')
 def registro():
     return render_template('registro.html')
-# //
+# // >
 
-# Iniciar sesion
+# Iniciar sesion <
 @ind.route('/login', methods=['GET','POST'])
 def login():
     if request.method == "POST":
@@ -31,9 +31,7 @@ def login():
 
         # Check if the user exists in the database
         account = db.session.query(Paciente.id_paciente, Paciente.clave).filter(Paciente.correo == _correo).first()
-
-        print(account)
-
+        
         if account and check_password_hash(account.clave, _clave):
             session['logueado'] = True
             session['id'] = account.id_paciente
@@ -55,9 +53,9 @@ def login():
 
     else:
         return render_template('login.html')
-# //
+# // >
 
-# Cerrar sesion del usuario
+# Cerrar sesion del usuario <
 @ind.route('/logout/<id>', methods=['GET'])
 def logout(id):
     
@@ -72,7 +70,7 @@ def logout(id):
         return redirect(url_for('log.index'))
     else:
         return "Error 404, No se pudo cerrar la sesion"
-# //
+# // >
 
 
 # TODO: Falta recuperar contraseña

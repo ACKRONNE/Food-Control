@@ -6,34 +6,36 @@
 
 <h1>Mis comidas</h1>
 <h3>{{ formatted_date }}</h3>
-<a href="{{ url_for('paciente.perfil', id=id.id_paciente)}}">Perfil</a>
+<a href="{{ url_for('paciente.perfil', id=result.id_paciente)}}">Perfil</a>
 
 <!-- Barra de buscador -->
-<form action="{{url_for('paciente.inicio', id=id.id_paciente)}}" method="POST">
+<form action="{{url_for('paciente.inicio', id=result.id_paciente)}}" method="POST">
         <input type="text" placeholder="Agust, 23 2023" name="pac-fecha" required>
         <button type="submit" class="btn btn-primary">Buscar</button>
 </form>
 <!-- // -->
 
+<!-- FIXME: Falta update y delete de cada producto -->
+
 <!-- Resultados de busqueda -->
 <ul>
-    {{ formatted_fecha }}
-    {% for comida in comi %}
+    {{ date }}
+    {% for comida in tipo %}
       <li>
-        {% if comida.tipo == "d" %}
+        {% if comida.tipo == "D" %}
             <span>Desayuno</span>
         {% endif %}
-        {% if comida.tipo == "a" %}
+        {% if comida.tipo == "A" %}
             <span>Almuerzo</span>
         {% endif %}
-        {% if comida.tipo == "c" %}
+        {% if comida.tipo == "C" %}
             <span>Cena</span>
         {% endif %}
-        {% if comida.tipo == "m" %}
+        {% if comida.tipo == "M" %}
             <span>Merienda</span>
         {% endif %}
 
-        <a href="/#">></a> 
+        <a href="{{ url_for('paciente.detalleComida', id=result.id_paciente, date=fecha, comida=comida.id_comida) }}">></a> 
         <a href="/#">update</a> 
         <a href="/#">delete</a>
     </li>
@@ -44,9 +46,11 @@
 <h1>---Borrar---</h1>
 
 <!-- data from the person -->
-<p>{{id.pri_nombre}}</p>
-<p>{{id.id_paciente}}</p>
+<p>{{result.pri_nombre}}</p>
+<p>{{result.id_paciente}}</p>
 <h1>Paciente</h1>
 <!-- // -->
+
+<h1>---Hasta Aqui---</h1>
 
 {% endblock %}

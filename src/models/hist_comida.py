@@ -13,7 +13,7 @@ class HistComida(db.Model):
     fecha_fin = Column(Date)
 
     __table_args__ = (
-        ForeignKeyConstraint(['id_paciente', 'id_espe', 'id_comida'], ['comidas.id_paciente', 'comidas.id_espe', 'comidas.id_comida']),
+        ForeignKeyConstraint(['id_paciente', 'id_espe', 'id_comida'], ['comidas.id_paciente', 'comidas.id_espe', 'comidas.id_comida'], ondelete='CASCADE'),
         PrimaryKeyConstraint('id_paciente', 'id_espe', 'id_comida', 'fecha_ini'),
         CheckConstraint(satisfaccion.in_(['Cansado', 'Mal', 'No muy bien', 'Normal', 'Bien', 'Super']), name='check_satisfaccion'),
     )
