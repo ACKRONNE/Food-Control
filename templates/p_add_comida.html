@@ -1,7 +1,43 @@
 {% extends 'layout.html' %}
 
-{% block title %}Agregar Comida Paciente{% endblock %}
+{% block title %}Agregar Comida{% endblock %}
 
 {% block body %}
-  <!-- Me da flojera terminar esta parte -->
+  
+  <a href="{{ url_for('paciente.inicio', id=7) }}">Volver</a>
+  <h1>Agregar Comida</h1>
+
+  <form action="{{ url_for('paciente.addFood', id=7) }}" method="POST" class="form-control">
+    
+    <div class="form-group">
+      <div requiere>
+      <label><input type="radio" name="pac-sexo" value="D">Desayuno</label><br>
+      <label><input type="radio" name="pac-sexo" value="A">Almuerzo</label><br>
+      <label><input type="radio" name="pac-sexo" value="C">Cena</label><br>
+      <label><input type="radio" name="pac-sexo" value="M">Merienda</label><br>
+      </div>
+    </div>
+
+    <label for="Proteina">Proteina</label>
+    <label for="Carbohidrato">Carbohidrato</label>
+    <label for="Vegetal">Vegetal</label>
+    <label for="Fruta">Fruta</label>
+    <label for="Bebida">Bebida</label>
+    <label for="Dulce">Dulce</label>
+    <label for="Grasa">Grasa</label>
+    <label for="otro">Otro</label>
+
+  
+    <h2>¿Como te sientes?</h2>
+  
+    <h2>Comentario</h2>
+
+    <h2>Fecha</h2>
+
+    <div class="button-container">
+      <button class="submit-btn" type="submit">Aceptar</button>
+    </div>
+
+  </form>
+
 {% endblock %}

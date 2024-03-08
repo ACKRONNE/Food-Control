@@ -190,53 +190,51 @@ def updateProfile(id):
 # // >
 
 # Agregar Comida < FIXME:
-@pac.route('/agregar_comida/<id>/<date>', methods=['GET', 'POST'])
-def addFood(id, date):
+@pac.route('/agregar_comida/<id>', methods=['GET', 'POST'])
+def addFood(id):
     
-    if request.method == 'POST':
-        tipo_comida = request.form['tipo_comida']
-        satisfaccion = request.form['satisfaccion']
-        comentario = request.form['comentario']
-        alimentos = request.form.getlist('alimentos')
+    # if request.method == 'POST':
 
-        # Se inserta la comida en la tabla
-        new_comida = Comida (
-            result.id_paciente,
-            1,
-            tipo_comida
-        )
+        # tipo_comida = request.form['tipo_comida']
+        # satisfaccion = request.form['satisfaccion']
+        # comentario = request.form['comentario']
+        # alimentos = request.form.getlist('alimentos')
 
-        db.session.add(new_comida)
-        db.session.commit()
+        # new_comida = Comida (
+        #     result.id_paciente,
+        #     1,
+        #     tipo_comida
+        # )
 
-        # Se insertan los alimentos en la tabla
-        for alimento in alimentos:
-            new_ac = AC (
-                result.id_paciente,
-                1,
-                new_comida.id_comida,
-                alimento
-            )
-            db.session.add(new_ac)
-            db.session.commit()
+        # db.session.add(new_comida)
+        # db.session.commit()
 
-        # Se inserta el historial de la comida
-        new_hist_comida = HistComida (
-            result.id_paciente,
-            1,
-            new_comida.id_comida,
-            satisfaccion,
-            comentario,
-            date
-        )
+        # for alimento in alimentos:
+        #     new_ac = AC (
+        #         result.id_paciente,
+        #         1,
+        #         new_comida.id_comida,
+        #         alimento
+        #     )
+        #     db.session.add(new_ac)
+        #     db.session.commit()
 
-        db.session.add(new_hist_comida)
-        db.session.commit()
-        db.session.close()
+        # new_hist_comida = HistComida (
+        #     result.id_paciente,
+        #     1,
+        #     new_comida.id_comida,
+        #     satisfaccion,
+        #     comentario,
+        #     date
+        # )
 
-        return redirect(url_for('paciente.inicio', id=id))
+        # db.session.add(new_hist_comida)
+        # db.session.commit()
+        # db.session.close()
+
+        # return redirect(url_for('paciente.inicio', id=id))
     
-    return render_template('p_agregar_comida.html', id=id, date=date)
+    return render_template('p_add_comida.html', id=id)
 # // >
 
 # Ver Especialistas <
@@ -266,6 +264,8 @@ def detalleEspecialista(id, espe):
 
     paciente = Paciente.query.get(id)
     especialista = db.session.query(Especialista).filter(Especialista.id_espe == espe).first()
+
+    # FIXME: Estas haciendo que funcione el filtro para tener el menu de las comidas del especialista
 
     db.session.close()
 

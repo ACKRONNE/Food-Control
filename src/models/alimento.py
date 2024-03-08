@@ -10,7 +10,7 @@ class Alimento(db.Model):
   cantidad = Column(Numeric(10), nullable=False, default=1)
 
   __table_args__ = (
-      CheckConstraint(tipo.in_(['Proteina','Carbohidrato','Grasa','Vegetal','Fruta','Lacteo','Bebida','Dulce','Otros']), name='check_tipo'),
+      CheckConstraint(tipo.in_(['Proteina','Carbohidrato','Grasa','Vegetal','Fruta','Bebida','Dulce','Otros']), name='check_tipo'),
   )
 
   def __init__(self, tipo, nombre, cantidad):

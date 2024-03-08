@@ -47,7 +47,7 @@ CREATE TABLE especialistas (
 
 CREATE TABLE alimentos (
     id_alimento 			numeric(3) 		PRIMARY KEY DEFAULT NEXTVAL('seq_alimento'),
-    tipo                    varchar(15)     NOT NULL    CHECK(tipo IN ('Proteina','Carbohidrato','Grasa','Vegetal','Fruta','Lacteo','Bebida','Dulce','Salado','Otros')),
+    tipo                    varchar(15)     NOT NULL    CHECK(tipo IN ('Proteina','Carbohidrato','Grasa','Vegetal','Fruta','Bebida','Dulce','Otros')),
     nombre                  varchar(40)     NOT NULL,
     cantidad                numeric(10)     NOT NULL
 );
