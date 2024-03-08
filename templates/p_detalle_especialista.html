@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block title %}Detalle Especialista{% endblock %}
+
+{% block body %}
+
+  <!-- Static title -->
+  <a href="{{ url_for('paciente.especialistas', id=paciente.id_paciente) }}">Volver</a>
+  <a href="{{ url_for('paciente.perfil', id=paciente.id_paciente) }}">Perfil</a>
+  <h1>Especialistas</h1>
+  <!-- // -->
+
+  <h1>{{especialista.pri_nombre}} {{especialista.pri_apellido}}</h1>
+  <div>Correo: {{especialista.correo}}</div>
+  <div>Telefono: {{especialista.telefono}}</div>
+  <div>Especialidad: {{especialista.especialidad}}</div>
+
+{% endblock %}

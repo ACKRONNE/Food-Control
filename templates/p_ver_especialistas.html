@@ -13,7 +13,7 @@
     {{date}}
 
     {% for especialista in result %}
-        <p>{{especialista.pri_nombre}} {{especialista.pri_apellido}} {{especialista.especialidad}} <a href="/#">></a></p>
+        <p>{{especialista.pri_nombre}} {{especialista.pri_apellido}} {{especialista.especialidad}} <a href="{{ url_for('paciente.detalleEspecialista', id=id, espe=especialista.id_espe) }}">></a></p>
     {% endfor %}
 
 {% endblock %}

@@ -192,8 +192,6 @@ def updateProfile(id):
 # Agregar Comida < FIXME:
 @pac.route('/agregar_comida/<id>/<date>', methods=['GET', 'POST'])
 def addFood(id, date):
-
-    paciente = Paciente.query.get(id)
     
     if request.method == 'POST':
         tipo_comida = request.form['tipo_comida']
@@ -252,11 +250,24 @@ def especialistas(id):
         Especialista.pri_nombre, 
         Especialista.pri_apellido, 
         Especialista.especialidad,
+        Especialista.id_espe
     ).join(
         Comida, Especialista.id_espe == Comida.id_espe
     ).filter(
         Comida.id_paciente == id
     ).distinct()
 
-    return render_template('p_especialistas.html', id=id, result=result, date=date)
+    return render_template('p_ver_especialistas.html', id=id, result=result, date=date)
+# // >
+
+# Detalle especialistas <
+@pac.route('/detalle_especialista/<id>/<espe>', methods=['GET'])
+def detalleEspecialista(id, espe):
+
+    paciente = Paciente.query.get(id)
+    especialista = db.session.query(Especialista).filter(Especialista.id_espe == espe).first()
+
+    db.session.close()
+
+    return render_template('p_detalle_especialista.html', especialista=especialista, paciente=paciente)
 # // >
