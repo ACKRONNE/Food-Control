@@ -1,17 +1,15 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from werkzeug.security import generate_password_hash
+from sqlalchemy.orm import aliased
 from sqlalchemy import and_, or_
 from src.database.db import db
 from datetime import datetime
 
 # Entidades
-from src.models.especialista import Especialista
-from src.models.hist_comida import HistComida
-from src.models.alimento import Alimento
-from src.models.paciente import Paciente
-from src.models.comida import Comida
-from src.models.a_c import AC
+from src.models.models import Especialista, Paciente, Comida, AC, Alimento, HistComida
 # //
+
+# FIXME: Hay que agregar los try-catch en todos los metodos
 
 pac = Blueprint('paciente', __name__)
 
@@ -57,7 +55,7 @@ def registro():
   
   else:
       return render_template('p_registro.html')
-# // >
+# // > 
 
 
 # Inicio <
@@ -67,6 +65,10 @@ def inicio(id):
     # Consulta de todos los datos del paciente
     result = db.session.query(Paciente).filter(Paciente.id_paciente == id).first()
     # //
+
+    if result is None:
+        flash('Paciente no encontrado.', 'danger')
+        return redirect(url_for('index.index')) 
 
     # Fecha Actual
     date = datetime.now()
@@ -109,7 +111,127 @@ def perfil(id):
     return render_template("p_perfil.html", id=id, paciente=paciente)
 # // >
 
-# Detalle de comida <
+# Eliminar Cuenta <
+@pac.route('/eliminar_cuenta/<id>', methods=['POST'])
+def deleteAccount(id):
+    paciente = Paciente.query.get(id)
+    if paciente:
+        db.session.delete(paciente)
+        db.session.commit()
+        return redirect(url_for('index.index'))
+    else:
+        return "Paciente no encontrado", 404
+# // >
+
+# Modificar Perfil <
+@pac.route('/editar_perfil/<id>', methods=['GET', 'POST'])
+def updateProfile(id):
+
+    paciente = Paciente.query.get(id)
+
+    if paciente is None:
+        flash('Paciente no encontrado.', 'danger')
+        return redirect(url_for('index.index')) 
+
+    if request.method == 'POST':
+
+        paciente.pri_nombre = request.form['pac-pri-nombre']
+        paciente.pri_apellido = request.form['pac-pri-apellido']
+        paciente.seg_apellido = request.form['pac-seg-apellido']
+        paciente.sexo = request.form['pac-sexo']
+        paciente.correo = request.form['pac-correo']
+        paciente.telefono = request.form['pac-telefono']
+        clave = request.form['pac-clave']
+        # Hacer la contraseña segura
+        paciente.clave = generate_password_hash(clave)   
+        # //
+        paciente.fecha_nacimiento = request.form['pac-fecha-nacimiento']
+        paciente.seg_nombre = request.form['pac-seg-nombre']
+
+        db.session.commit()
+
+        return render_template('p_editar_perfil.html', paciente=paciente)
+    
+    return render_template('p_editar_perfil.html', paciente=paciente)
+# // >
+
+# FIXME: Agregar una validacion que si o consigue a ningun especialista muestre un mensaje que diga, usted no tienen un especialista asignado por favor contacte a la fundacion para mas informacion
+
+# Agregar Comida < 
+@pac.route('/agregar_comida/<id>', methods=['GET', 'POST'])
+def addFood(id):     
+
+    get_pac = db.session.query(Paciente).filter(Paciente.id_paciente == id).first()
+    get_prot = db.session.query(Alimento).filter(Alimento.tipo == 'Proteina').all()
+
+    if get_pac is None:
+        flash('Paciente no encontrado.', 'danger')
+        return redirect(url_for('index.index')) 
+    
+    print(get_pac)
+
+    if request.method == 'POST':
+
+        tipo_comida = request.form['tipo-comida']
+        satisfaccion = request.form['satisfaccion']
+        comentario = request.form['comentario']
+        fecha_ini = '2024-07-15'
+        fecha_fin = '2024-07-15'
+
+        id_espe = 1  # Reemplaza esto con el ID correcto del especialista
+
+        new_comida = Comida(
+            get_pac.id_paciente,
+            id_espe,
+            tipo_comida
+        )
+        db.session.add(new_comida)
+        db.session.commit()
+
+        print("Comida Agregada con exito")
+        flash("Comida Agregada con exito")
+        # //
+
+        _alimento = request.form.getlist('proteinas[]')
+
+        # FIXME: No está funcionando
+        for alimento in _alimento:
+            new_ac = AC(
+                get_pac.id_paciente,
+                id_espe,
+                new_comida.id_comida,
+                alimento
+            )
+            db.session.add(new_ac)
+
+            print("Registro de alimento agregado con exito")
+            flash("Registro de alimento agregado con exito")
+        # //
+
+        # 
+        new_hist_comida = HistComida (
+            get_pac.id_paciente,
+            id_espe,
+            new_comida.id_comida,
+            fecha_ini, 
+            satisfaccion,
+            comentario,
+            fecha_fin
+        )
+        db.session.add(new_hist_comida)
+        print("Historico Agregado con exito")
+        flash("Historico Agregado con exito")
+        # //
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(url_for('paciente.inicio', id=id))
+    
+    return render_template('p_add_comida.html', id=id, get_pac=get_pac, get_prot=get_prot)
+# // >
+
+# Detalle de comida < FIXME:
 @pac.route('/detalle_comida/<id>/<date>/<comida>', methods=["GET"])
 def detalleComida(id, date, comida):
 
@@ -149,93 +271,9 @@ def detalleComida(id, date, comida):
     date_formatted = date_obj.strftime("%B, %d %Y")
 
     return render_template("p_detalle.html", result=result, datos=datos, date=date, comida=comida, date_formatted=date_formatted)
-# // >
+# // > FIXME:
 
-@pac.route('/eliminar_cuenta/<id>', methods=['POST'])
-def deleteAccount(id):
-    paciente = Paciente.query.get(id)
-    if paciente:
-        db.session.delete(paciente)
-        db.session.commit()
-        return redirect(url_for('index.index')) # Redirige al usuario a la página de inicio
-    else:
-        return "Paciente no encontrado", 404
 
-# Modificar Perfil <
-@pac.route('/editar_perfil/<id>', methods=['GET', 'POST'])
-def updateProfile(id):
-
-    paciente = Paciente.query.get(id)
-
-    if request.method == 'POST':
-
-        paciente.pri_nombre = request.form['pac-pri-nombre']
-        paciente.pri_apellido = request.form['pac-pri-apellido']
-        paciente.seg_apellido = request.form['pac-seg-apellido']
-        paciente.sexo = request.form['pac-sexo']
-        paciente.correo = request.form['pac-correo']
-        paciente.telefono = request.form['pac-telefono']
-        clave = request.form['pac-clave']
-        # Hacer la contraseña segura
-        paciente.clave = generate_password_hash(clave)   
-        # //
-        paciente.fecha_nacimiento = request.form['pac-fecha-nacimiento']
-        paciente.seg_nombre = request.form['pac-seg-nombre']
-
-        db.session.commit()
-
-        return render_template('p_editar_perfil.html', paciente=paciente)
-    
-    return render_template('p_editar_perfil.html', paciente=paciente)
-# // >
-
-# Agregar Comida < FIXME:
-@pac.route('/agregar_comida/<id>', methods=['GET', 'POST'])
-def addFood(id):
-    
-    # if request.method == 'POST':
-
-        # tipo_comida = request.form['tipo_comida']
-        # satisfaccion = request.form['satisfaccion']
-        # comentario = request.form['comentario']
-        # alimentos = request.form.getlist('alimentos')
-
-        # new_comida = Comida (
-        #     result.id_paciente,
-        #     1,
-        #     tipo_comida
-        # )
-
-        # db.session.add(new_comida)
-        # db.session.commit()
-
-        # for alimento in alimentos:
-        #     new_ac = AC (
-        #         result.id_paciente,
-        #         1,
-        #         new_comida.id_comida,
-        #         alimento
-        #     )
-        #     db.session.add(new_ac)
-        #     db.session.commit()
-
-        # new_hist_comida = HistComida (
-        #     result.id_paciente,
-        #     1,
-        #     new_comida.id_comida,
-        #     satisfaccion,
-        #     comentario,
-        #     date
-        # )
-
-        # db.session.add(new_hist_comida)
-        # db.session.commit()
-        # db.session.close()
-
-        # return redirect(url_for('paciente.inicio', id=id))
-    
-    return render_template('p_add_comida.html', id=id)
-# // >
 
 # Ver Especialistas <
 @pac.route('/ver_especialistas/<id>', methods=['GET'])
@@ -244,15 +282,18 @@ def especialistas(id):
     date = datetime.now()
     date = date.strftime("%b, %d %Y")
 
+    comida_alias = aliased(Comida)
+    espe_alias = aliased(Especialista)
+
     result = db.session.query(
-        Especialista.pri_nombre, 
-        Especialista.pri_apellido, 
-        Especialista.especialidad,
-        Especialista.id_espe
+        espe_alias.pri_nombre, 
+        espe_alias.pri_apellido, 
+        espe_alias.especialidad,
+        espe_alias.id_espe
     ).join(
-        Comida, Especialista.id_espe == Comida.id_espe
+        comida_alias, espe_alias.id_espe == comida_alias.id_espe
     ).filter(
-        Comida.id_paciente == id
+        comida_alias.id_paciente == id
     ).distinct()
 
     return render_template('p_ver_especialistas.html', id=id, result=result, date=date)

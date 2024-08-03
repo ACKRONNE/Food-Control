@@ -53,9 +53,9 @@ CREATE TABLE alimentos (
 );
 
 CREATE TABLE comidas (
+    id_comida 				numeric(3)      NOT NULL    DEFAULT NEXTVAL('seq_comida'),
     id_paciente             numeric(3)      NOT NULL,
     id_espe                 numeric(3)      NOT NULL,
-    id_comida 				numeric(3)      NOT NULL    DEFAULT NEXTVAL('seq_comida'),
     tipo 	                varchar(1) 	    NOT NULL    CHECK(tipo IN ('D','A','C','M')),
     FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente),
     FOREIGN KEY (id_espe) REFERENCES especialistas(id_espe),

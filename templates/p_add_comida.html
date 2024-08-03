@@ -4,40 +4,101 @@
 
 {% block body %}
   
-  <a href="{{ url_for('paciente.inicio', id=7) }}">Volver</a>
+  <a href="{{ url_for('paciente.inicio', id=get_pac.id_paciente) }}">Volver</a>
   <h1>Agregar Comida</h1>
 
-  <form action="{{ url_for('paciente.addFood', id=7) }}" method="POST" class="form-control">
+  <form action="{{ url_for('paciente.addFood', id=get_pac.id_paciente) }}" method="POST" class="form-control">
     
     <div class="form-group">
       <div requiere>
-      <label><input type="radio" name="pac-sexo" value="D">Desayuno</label><br>
-      <label><input type="radio" name="pac-sexo" value="A">Almuerzo</label><br>
-      <label><input type="radio" name="pac-sexo" value="C">Cena</label><br>
-      <label><input type="radio" name="pac-sexo" value="M">Merienda</label><br>
+      <label><input type="radio" name="tipo-comida" value="D">Desayuno</label><br>
+      <label><input type="radio" name="tipo-comida" value="A">Almuerzo</label><br>
+      <label><input type="radio" name="tipo-comida" value="C">Cena</label><br>
+      <label><input type="radio" name="tipo-comida" value="M">Merienda</label><br>
       </div>
     </div>
 
-    <label for="Proteina">Proteina</label>
-    <label for="Carbohidrato">Carbohidrato</label>
-    <label for="Vegetal">Vegetal</label>
-    <label for="Fruta">Fruta</label>
-    <label for="Bebida">Bebida</label>
-    <label for="Dulce">Dulce</label>
-    <label for="Grasa">Grasa</label>
-    <label for="otro">Otro</label>
+    <!-- Zona de Alimentos -->
+    <div class="proteinas" id="proteinas">
+      <div class="row group">
+          <div class="column">
+              <div class="form-group">
+                  <label>Proteina</label>
+                  <select id="ali-nombre-proteina" name="ali-nombre-proteina[]">
+                      <option value="">Selecciona el nombre</option>
+                      {% for proteina in get_prot %}
+                          <option value="{{ proteina.id_alimento }}">{{ proteina.nombre }}</option>
+                      {% endfor %}
+                  </select>
+              </div>
+          </div>
+      </div>
+      <button type="button" id="add-proteina">Agregar otra Proteina</button>
+    </div>
+    <!-- // -->
 
-  
     <h2>¿Como te sientes?</h2>
-  
+    <div class="form-group">
+        <div>
+            <label><input type="radio" name="satisfaccion" value="Super"> Super</label><br>
+            <label><input type="radio" name="satisfaccion" value="Bien"> Bien</label><br>
+            <label><input type="radio" name="satisfaccion" value="Normal"> Normal</label><br>
+            <label><input type="radio" name="satisfaccion" value="No muy bien"> No muy bien</label><br>
+            <label><input type="radio" name="satisfaccion" value="Nal"> Mal</label><br>
+            <label><input type="radio" name="satisfaccion" value="Cansado"> Cansado</label><br>
+        </div>
+    </div>
+
     <h2>Comentario</h2>
+    <div>
+        <textarea id="comentario" name="comentario"></textarea>
+    </div>
 
     <h2>Fecha</h2>
 
     <div class="button-container">
-      <button class="submit-btn" type="submit">Aceptar</button>
+      <button class="submit-btn" type="submit">Agregar Comida</button>
     </div>
-
   </form>
 
-{% endblock %}
+<!-- ZONA DE SCRIPTS -->
+<script>
+  // Para que funcione la entrada multiple de datos en proteina
+var proteinaIndex = 0;
+
+document.getElementById('add-proteina').addEventListener('click', function() {
+    var proteinas = document.getElementById('proteinas');
+    var newProteina = document.createElement('div');
+    newProteina.className = 'proteina';
+    newProteina.innerHTML = `
+    <div class="row group">
+        <div class="column">
+            <div class="form-group">
+                <label>Nombre proteina</label>
+                <select id="ali-nombre-proteina-" name="ali-nombre-proteina[]">
+                    <option value="">Selecciona el nombre</option>
+                    {% for proteina in get_prot %}
+                        <option value="{{ proteina.id_alimento }}">{{ proteina.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="remove-proteina">Eliminar</button>
+    `;
+    proteinas.appendChild(newProteina);
+    proteinaIndex++;
+});
+
+// Remover un elemento proteina
+document.getElementById('proteinas').addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('remove-proteina')) {
+        e.target.parentNode.remove();
+    }
+});
+// // Remove
+
+// // Entrada multiple
+</script>
+<!-- // SCRIPTS -->
+{% endblock body %}

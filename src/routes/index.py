@@ -4,8 +4,7 @@ from src.database.db import db
 
 
 # Entidades
-from src.models.paciente import Paciente
-from src.models.especialista import Especialista
+from src.models.models import Paciente, Especialista, Alimento, Comida, AC, HistComida
 # //
 
 ind = Blueprint('index', __name__)
@@ -32,13 +31,20 @@ def login():
         # Check if the user exists in the database
         account = db.session.query(Paciente.id_paciente, Paciente.clave).filter(Paciente.correo == _correo).first()
         
-        if account and check_password_hash(account.clave, _clave):
+        # if account and check_password_hash(account.clave, _clave):
+        #     session['logueado'] = True
+        #     session['id'] = account.id_paciente
+        #     _id = session['id']
+            
+        #     return redirect(url_for('paciente.inicio', id=_id))
+        if account: # Temporal para hacer pruebas sin seguridad
             session['logueado'] = True
             session['id'] = account.id_paciente
             _id = session['id']
-            
-            return redirect(url_for('paciente.inicio', id=_id))
         
+            return redirect(url_for('paciente.inicio', id=_id))
+
+
         else:    
             # Check in the especialist table if the user does not exist in the patients table
             account = db.session.query(Especialista.id_espe, Especialista.clave).filter(Especialista.correo == _correo).first()

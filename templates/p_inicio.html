@@ -3,12 +3,20 @@
 {% block title %}Home Paciente{% endblock %}
 
 {% block body %}
-     
-        <a href="{{url_for('paciente.especialistas', id=result.id_paciente)}}">Especialistas</a> 
-        <a href="{{url_for('paciente.addFood', id=result.id_paciente)}}">Agregar Comida</a>
 
-<h1>Mis comidas</h1>
+<a href="{{url_for('paciente.especialistas', id=result.id_paciente)}}">Especialistas</a> 
+<a href="{{url_for('paciente.addFood', id=result.id_paciente)}}">Agregar Comida</a>
+
+<!-- data from the person -->
+<h1>Paciente</h1>
+<h1>Bienvenido de Nuevo</h1>
+<span>{{result.pri_nombre}} {{result.pri_apellido}}</span>
+<!-- // -->
+
+<h2>---------------------------</h2>
+<h2>Mis comidas</h2>
 <h3>{{ formatted_date }}</h3>
+
 <a href="{{ url_for('paciente.perfil', id=result.id_paciente)}}">Perfil</a>
 
 <!-- Barra de buscador -->
@@ -45,15 +53,5 @@
     {% endfor %}
 </ul>
 <!-- // -->
-
-<h1>---Borrar---</h1>
-
-<!-- data from the person -->
-<p>{{result.pri_nombre}}</p>
-<p>{{result.id_paciente}}</p>
-<h1>Paciente</h1>
-<!-- // -->
-
-<h1>---Hasta Aqui---</h1>
-
+ 
 {% endblock %}
