@@ -26,128 +26,89 @@
 
         <div class="form-group" value="">
             <label>Proteinas</label>
-            {% set has_proteinas = false %}
             {% for comida in datos %}
                 {% if comida.tipo_alimento == "Proteina" %}
-                    {% set has_proteinas = true %}
-                    <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
+                <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
                 {% endif %}
             {% endfor %}
-            {% if not has_proteinas %}
-                <li>None</li>
-            {% endif %}
         </div>       
-
+        
         <div>-----------</div>
         
         <div class="form-group" value="">
             <label>Carbohidratos</label>
-            {% set has_carbohidratos = false %}
             {% for comida in datos %}
                 {% if comida.tipo_alimento == "Carbohidrato" %}
-                    {% set has_carbohidratos = true %}
                     <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
                 {% endif %}
             {% endfor %}
-            {% if not has_carbohidratos %}
-                <li>None</li>
-            {% endif %}
         </div>
-
+        
         <div>-----------</div>
         
         <div class="form-group" value="">
             <label>Vegetales</label>
-            {% set has_vegetales = false %}
             {% for comida in datos %}
                 {% if comida.tipo_alimento == "Vegetal" %}
-                    {% set has_vegetales = true %}
                     <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
                 {% endif %}
             {% endfor %}
-            {% if not has_vegetales %}
-                <li>None</li>
-            {% endif %}
         </div>
-
+        
         <div>-----------</div>
         
         <div class="form-group" value="">
             <label>Frutas</label>
-            {% set has_frutas = false %}
             {% for comida in datos %}
                 {% if comida.tipo_alimento == "Fruta" %}
-                    {% set has_frutas = true %}
                     <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
                 {% endif %}
             {% endfor %}
-            {% if not has_frutas %}
-                <li>None</li>
-            {% endif %}
         </div>
-
+        
         <div>-----------</div>
         
         <div class="form-group" value="">
             <label>Grasas</label>
-            {% set has_grasas = false %}
             {% for comida in datos %}
                 {% if comida.tipo_alimento == "Grasa" %}
-                    {% set has_grasas = true %}
                     <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
                 {% endif %}
             {% endfor %}
-            {% if not has_grasas %}
-                <li>None</li>
-            {% endif %}
         </div>
-
+        
         <div>-----------</div>
         
         <div class="form-group" value="">
             <label>Bebidas</label>
-            {% set has_bebidas = false %}
             {% for comida in datos %}
                 {% if comida.tipo_alimento == "Bebida" %}
-                    {% set has_bebidas = true %}
+    
                     <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
                 {% endif %}
             {% endfor %}
-            {% if not has_bebidas %}
-                <li>None</li>
-            {% endif %}
         </div>
-
+        
         <div>-----------</div>
         
         <div class="form-group" value="">
             <label>Dulce</label>
-            {% set has_dulce = false %}
             {% for comida in datos %}
                 {% if comida.tipo_alimento == "Dulce" %}
-                    {% set has_dulce = true %}
                     <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
                 {% endif %}
             {% endfor %}
-            {% if not has_dulce %}
-                <li>None</li>
-            {% endif %}
         </div>
         
         <div>-----------</div>
-
+        
         <div class="form-group" value="">
             <label>Otros</label>
-            {% set has_otros = false %}
             {% for comida in datos %}
                 {% if comida.tipo_alimento == "Otros" %}
-                    {% set has_otros = true %}
                     <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
                 {% endif %}
             {% endfor %}
-            {% if not has_otros %}
-                <li>None</li>
-            {% endif %}
         </div>
 
         <h1>Satisfaccion</h1>

@@ -19,21 +19,21 @@
     </div>
 
     <!-- Alimentos -->
-    <div class="proteinas" id="proteinas">
+    <div class="alimentos" id="alimentos">
       <div class="row group">
           <div class="column">
               <div class="form-group">
-                  <label>Proteina</label>
-                  <select id="proteinas[]" name="proteinas[]">
+                  <label>Alimento</label>
+                  <select id="alimentos[]" name="alimentos[]">
                       <option value="">Selecciona el nombre</option>
-                      {% for proteina in get_prot %}
-                          <option value="{{ proteina.id_alimento }}">{{ proteina.nombre }}</option>
+                      {% for alimento in get_ali %}
+                          <option value="{{ alimento.id_alimento }}">{{ alimento.nombre }}</option>
                       {% endfor %}
                   </select>
               </div>
           </div>
       </div>
-      <button type="button" id="add-proteina">Agregar otra Proteina</button>
+      <button type="button" id="add-alimento">Agregar otro Alimento</button>
     </div>
     <!-- // -->
 
@@ -67,36 +67,35 @@
 <!-- ZONA DE SCRIPTS -->
 <script>
 
-// Para que funcione la entrada multiple de datos en proteina
-var proteinaIndex = 0;
+// Para que funcione la entrada multiple de datos en alimento
+var alimentoIndex = 0;
 
-document.getElementById('add-proteina').addEventListener('click', function() {
-    var proteinas = document.getElementById('proteinas');
-    var newProteina = document.createElement('div');
-    newProteina.className = 'proteina';
-    newProteina.innerHTML = `
+document.getElementById('add-alimento').addEventListener('click', function() {
+    var alimentos = document.getElementById('alimentos');
+    var newAlimento = document.createElement('div');
+    newAlimento.className = 'alimento';
+    newAlimento.innerHTML = `
     <div class="row group">
         <div class="column">
             <div class="form-group">
-                <label>Nombre proteina</label>
-                <select id="proteinas[]" name="proteinas[]">
+                <select id="alimentos[]" name="alimentos[]">
                     <option value="">Selecciona el nombre</option>
-                    {% for proteina in get_prot %}
-                        <option value="{{ proteina.id_alimento }}">{{ proteina.nombre }}</option>
+                    {% for alimento in get_ali %}
+                        <option value="{{ alimento.id_alimento }}">{{ alimento.nombre }}</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
     </div>
-    <button type="button" class="remove-proteina">Eliminar</button>
+    <button type="button" class="remove-alimento">Eliminar</button>
     `;
-    proteinas.appendChild(newProteina);
-    proteinaIndex++;
+    alimentos.appendChild(newAlimento);
+    alimentoIndex++;
 });
 
-// Remover un elemento proteina
-document.getElementById('proteinas').addEventListener('click', function(e) {
-    if (e.target && e.target.classList.contains('remove-proteina')) {
+// Remover un elemento alimento
+document.getElementById('alimentos').addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('remove-alimento')) {
         e.target.parentNode.remove();
     }
 });

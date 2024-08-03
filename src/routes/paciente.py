@@ -156,7 +156,7 @@ def updateProfile(id):
 def addFood(id):     
 
     get_pac = db.session.query(Paciente).filter(Paciente.id_paciente == id).first()
-    get_prot = db.session.query(Alimento).filter(Alimento.tipo == 'Proteina').all()
+    get_ali = db.session.query(Alimento).all()
 
     if get_pac is None:
         flash('Paciente no encontrado.', 'danger')
@@ -185,9 +185,7 @@ def addFood(id):
             print("Comida Agregada con exito")
             flash("Comida Agregada con exito")
 
-            _alimento = request.form.getlist('proteinas[]')
-
-            print(_alimento)
+            _alimento = request.form.getlist('alimentos[]')
 
             for alimento in _alimento:
                 new_ac = AC(
@@ -211,10 +209,10 @@ def addFood(id):
 
         return redirect(url_for('paciente.inicio', id=id))
     
-    return render_template('p_add_comida.html', id=id, get_pac=get_pac, get_prot=get_prot)
+    return render_template('p_add_comida.html', id=id, get_pac=get_pac, get_ali=get_ali)
 # // >
 
-# Detalle de comida < TODO: Falta probar si funciona, cambiar todas las cosas en el HTML
+# Detalle de comida <
 @pac.route('/detalle_comida/<id>/<date>', methods=["GET"])
 def foodDetail(id, date):
 
@@ -243,8 +241,8 @@ def foodDetail(id, date):
     date_obj = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
     date_formatted = date_obj.strftime("%B, %d %Y a las %H:%M")
 
-    return render_template("p_detalle.html", get_pac=get_pac, datos=datos, date=date, date_formatted=date_formatted)
-# // > FIXME:
+    return render_template("p_detalle_comida.html", get_pac=get_pac, datos=datos, date=date, date_formatted=date_formatted)
+# // >
 
 
 
