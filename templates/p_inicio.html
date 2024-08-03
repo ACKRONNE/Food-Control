@@ -4,23 +4,23 @@
 
 {% block body %}
 
-<a href="{{url_for('paciente.especialistas', id=result.id_paciente)}}">Especialistas</a> 
-<a href="{{url_for('paciente.addFood', id=result.id_paciente)}}">Agregar Comida</a>
+<a href="{{url_for('paciente.especialistas', id=get_pac.id_paciente)}}">Especialistas</a> 
+<a href="{{url_for('paciente.addFood', id=get_pac.id_paciente)}}">Agregar Comida</a>
 
 <!-- data from the person -->
 <h1>Paciente</h1>
 <h1>Bienvenido de Nuevo</h1>
-<span>{{result.pri_nombre}} {{result.pri_apellido}}</span>
+<span>{{get_pac.pri_nombre}} {{get_pac.pri_apellido}}</span>
 <!-- // -->
 
 <h2>---------------------------</h2>
 <h2>Mis comidas</h2>
 <h3>{{ formatted_date }}</h3>
 
-<a href="{{ url_for('paciente.perfil', id=result.id_paciente)}}">Perfil</a>
+<a href="{{ url_for('paciente.perfil', id=get_pac.id_paciente)}}">Perfil</a>
 
 <!-- Barra de buscador -->
-<form action="{{url_for('paciente.inicio', id=result.id_paciente)}}" method="POST">
+<form action="{{url_for('paciente.inicio', id=get_pac.id_paciente)}}" method="POST">
         <input type="text" placeholder="Agust, 23 2023" name="pac-fecha" required>
         <button type="submit" class="btn btn-primary">Buscar</button>
 </form>
@@ -46,7 +46,7 @@
             <span>Merienda</span>
         {% endif %}
 
-        <a href="{{ url_for('paciente.detalleComida', id=result.id_paciente, date=fecha, comida=comida.id_comida) }}">></a> 
+        <a href="{{ url_for('paciente.foodDetail', id=get_pac.id_paciente, date=comida.fecha_ini) }}">></a> 
         <a href="/#">update</a> 
         <a href="/#">delete</a>
     </li>

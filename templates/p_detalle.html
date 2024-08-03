@@ -5,115 +5,40 @@
 {% block body %}
 
   <!-- Static title -->
-  <a href="{{ url_for('paciente.inicio', id=result.id_paciente) }}">Volver</a>
-  <a href="{{ url_for('paciente.perfil', id=result.id_paciente) }}">Perfil</a>
+  <a href="{{ url_for('paciente.inicio', id=get_pac.id_paciente) }}">Volver</a>
+  <a href="{{ url_for('paciente.perfil', id=get_pac.id_paciente) }}">Perfil</a>
   <h1>Detalle Comida</h1>
   <!-- // -->
 
         {{ date_formatted }}
 
-
-        {% if datos[0].tipo_comida == "D" %}
+        <!-- Formato del tipo de Comida -->
+        {% if datos.tipo == "D" %}
             <h3>Desayuno</h3>
-        {% elif datos[0].tipo_comida == "A" %}
+        {% elif datos.tipo == "A" %}
             <h3>Almuerzo</h3>
-        {% elif datos[0].tipo_comida == "C" %}
+        {% elif datos.tipo_alimento == "C" %}
             <h3>Cena</h3>
-        {% elif datos[0].tipo_comida == "M" %}
+        {% elif datos.tipo_alimento == "M" %}
             <h3>Merienda</h3>
         {% endif %}
+        <!-- // -->
 
         <div class="form-group" value="">
-            {% for result in datos %}
-            {% if result[0] == "Proteina" %}            
             <label>Proteinas</label>
-                <li>{{result.nombre}} {{result.cantidad}}</li>
+            {% for comida in datos %}
+            {% if comida.tipo_alimento == "Proteina" %}            
+                <li>{{ comida.nombre }} {{ comida.cantidad }}</li>
             {% endif %}
           {% endfor %}
-        </div>
-    
-        <div class="form-group">
-            {% for result in datos %}
-            {% if result[0] == "Carbohidrato" %}            
-            <label>Carbohidratos</label>
-            <li>{{result.nombre}} {{result.cantidad}}</li>
-              {% endif %}
-            {% endfor %}
-        </div>
+        </div>       
+        
         
 
-        <div class="form-group">
-            {% for result in datos %}
-            {% if result[0] == "Vegetal" %}            
-            <label>Vegetales</label>
-                  <li>{{result.nombre}} {{result.cantidad}}</li>
-              {% endif %}
-            {% endfor %}
-          </div>
-
-        <div class="form-group">
-            {% for result in datos %}
-            {% if result[0] == "Grasa" %}            
-            <label>Grasas</label>
-                <li>{{result.nombre}} {{result.cantidad}}</li>
-            {% endif %}
-        {% endfor %}
-        </div>
-        
-
-        <div class="form-group">
-            {% for result in datos %}
-            {% if result[0] == "Fruta" %}            
-            <label>Frutas</label>
-                <li>{{result.nombre}} {{result.cantidad}}</li>
-            {% endif %}
-        {% endfor %}
-        </div>
-
-
-        <div class="form-group">
-            {% for result in datos %}
-            {% if result[0] == "Lacteo" %}            
-            <label>Lacteos</label>
-                    <li>{{result.nombre}} {{result.cantidad}}</li>
-                {% endif %}
-            {% endfor %}
-            </div>         
-            
-
-        <div class="form-group">
-            {% for result in datos %}
-            {% if result[0] == "Bebida" %}            
-            <label>Bebidas</label>
-                <li>{{result.nombre}} {{result.cantidad}}</li>
-            {% endif %}
-        {% endfor %}
-        </div>         
-        
-
-        <div class="form-group">
-            {% for result in datos %}
-            {% if result[0] == "Dulce" %}            
-            <label>Dulce</label>
-                    <li>{{result.nombre}} {{result.cantidad}}</li>
-                {% endif %}
-            {% endfor %}
-            </div>         
-            
-
-        <div class="form-group">
-            {% for result in datos %}
-            {% if result[0] == "o" %}            
-            <label>Otros</label>
-                <li>{{result.nombre}} {{result.cantidad}}</li>
-            {% endif %}
-        {% endfor %}
-        </div>          
-        
         <h1>Satisfaccion</h1>
-        {{datos[0].satisfaccion}}
-        <div></div>
+        {{datos.satisfaccion}}
+        <div>-----------</div>
         <h1>Comentario</h1>
-        {{datos[0].comentario}}
+        {{datos.comentario}}
 
 {% endblock %}

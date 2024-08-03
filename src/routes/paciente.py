@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from werkzeug.security import generate_password_hash
 from sqlalchemy.orm import aliased
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, cast, Date
 from src.database.db import db
 from datetime import datetime
 
@@ -63,12 +63,12 @@ def registro():
 def inicio(id):
 
     # Consulta de todos los datos del paciente
-    result = db.session.query(Paciente).filter(Paciente.id_paciente == id).first()
-    # //
+    get_pac = db.session.query(Paciente).filter(Paciente.id_paciente == id).first()
 
-    if result is None:
+    if get_pac is None:
         flash('Paciente no encontrado.', 'danger')
         return redirect(url_for('index.index')) 
+    # //
 
     # Fecha Actual
     date = datetime.now()
@@ -80,28 +80,23 @@ def inicio(id):
         # Extraigo la fecha del buscador
         fecha_str = request.form['pac-fecha']
         fecha = datetime.strptime(fecha_str, '%Y-%m-%d')
-        date = fecha.strftime('%B, %d %Y')
         # //
 
-        # Consulta de las comidas de los pacientes
-        tipo = db.session.query(Comida.tipo, Comida.id_comida).join(
-            HistComida, 
-            and_(
-                Comida.id_paciente == HistComida.id_paciente, 
-                Comida.id_espe == HistComida.id_espe, 
-                Comida.id_comida == HistComida.id_comida 
-            )
-        ).filter(
-            Comida.id_paciente == result.id_paciente,
-            HistComida.fecha_ini == fecha.date() 
-        ).all()      
+        date = fecha.strftime('%B, %d %Y') # Formateo de la fecha de la consulta
+
+        # Consulta de las comidas del paciente
+        tipo = (
+            db.session.query(Comida.tipo, Comida.fecha_ini)
+            .filter(cast(Comida.fecha_ini, Date) == fecha.date())
+            .filter(Comida.id_paciente == id)
+        ).all()
         # //
 
         db.session.close()
         
-        return render_template('p_inicio.html', result=result, date=date, formatted_date=formatted_date, tipo=tipo, fecha=fecha)
+        return render_template('p_inicio.html', get_pac=get_pac, formatted_date=formatted_date, date=date, tipo=tipo, fecha=fecha)
 
-    return render_template("p_inicio.html", result=result, formatted_date=formatted_date)
+    return render_template("p_inicio.html", get_pac=get_pac, formatted_date=formatted_date)
 # // >
 
 # Perfil <
@@ -156,7 +151,6 @@ def updateProfile(id):
 # // >
 
 # FIXME: Agregar una validacion que si o consigue a ningun especialista muestre un mensaje que diga, usted no tienen un especialista asignado por favor contacte a la fundacion para mas informacion
-
 # Agregar Comida < 
 @pac.route('/agregar_comida/<id>', methods=['GET', 'POST'])
 def addFood(id):     
@@ -169,95 +163,87 @@ def addFood(id):
         return redirect(url_for('index.index')) 
 
     if request.method == 'POST':
+        try:
+            tipo_comida = request.form['tipo-comida']
+            satisfaccion = request.form['satisfaccion']
+            comentario = request.form['comentario']
+            fecha_ini = request.form['fecha-ini']
 
-        tipo_comida = request.form['tipo-comida']
-        satisfaccion = request.form['satisfaccion']
-        comentario = request.form['comentario']
-        fecha_ini = request.form['fecha-ini']
+            id_espe = 1  # FIXME: Reemplazar esto con el ID correcto del especialista
 
-        id_espe = 1  # Reemplaza esto con el ID correcto del especialista
-
-        new_comida = Comida(
-            get_pac.id_paciente,
-            id_espe,
-            fecha_ini,
-            tipo_comida,
-            satisfaccion,
-            comentario
-        )
-        db.session.add(new_comida)
-        db.session.commit()
-
-        print("Comida Agregada con exito")
-        flash("Comida Agregada con exito")
-        # //
-
-        _alimento = request.form.getlist('proteinas[]')
-
-        print(_alimento)
-
-        # FIXME: No está funcionando
-        for alimento in _alimento:
-            new_ac = AC(
+            new_comida = Comida(
                 get_pac.id_paciente,
                 id_espe,
                 fecha_ini,
-                alimento
+                tipo_comida,
+                satisfaccion,
+                comentario
             )
-            db.session.add(new_ac)
+            db.session.add(new_comida)
+            db.session.commit()
 
-            print("Registro de alimento agregado con exito")
-            flash("Registro de alimento agregado con exito")
-        # //
+            print("Comida Agregada con exito")
+            flash("Comida Agregada con exito")
 
-        db.session.commit()
-        db.session.close()
+            _alimento = request.form.getlist('proteinas[]')
+
+            print(_alimento)
+
+            for alimento in _alimento:
+                new_ac = AC(
+                    get_pac.id_paciente,
+                    id_espe,
+                    fecha_ini,
+                    alimento
+                )
+                db.session.add(new_ac)
+
+                print("Registro de alimento agregado con exito")
+                flash("Registro de alimento agregado con exito")
+
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            flash("Ocurrió un error al agregar la comida.", "danger")
+            print(f"Error: {e}")
+        finally:
+            db.session.close()
 
         return redirect(url_for('paciente.inicio', id=id))
     
     return render_template('p_add_comida.html', id=id, get_pac=get_pac, get_prot=get_prot)
 # // >
 
-# Detalle de comida < FIXME:
-@pac.route('/detalle_comida/<id>/<date>/<comida>', methods=["GET"])
-def detalleComida(id, date, comida):
+# Detalle de comida < TODO: Falta probar si funciona, cambiar todas las cosas en el HTML
+@pac.route('/detalle_comida/<id>/<date>', methods=["GET"])
+def foodDetail(id, date):
 
-    result = db.session.query(Paciente.id_paciente).filter(Paciente.id_paciente == id).first()
+    get_pac = db.session.query(Paciente.id_paciente).filter(Paciente.id_paciente == id).first()
     
     # Consulta de SQLAlchemy 
     datos = db.session.query(
-        Alimento.tipo.label('tipo_alimento'),
-        Comida.tipo.label('tipo_comida'),
-        HistComida.satisfaccion,
-        HistComida.comentario,
         Alimento.nombre,
-        Alimento.cantidad
-    ).join(
-        AC, and_(
-            Comida.id_paciente == AC.id_paciente,
-            Comida.id_espe == AC.id_espe,
-            Comida.id_comida == AC.id_comida
-        )
-    ).join(
-        HistComida, and_(
-            HistComida.id_paciente == Comida.id_paciente,
-            HistComida.id_espe == Comida.id_espe,
-            HistComida.id_comida == Comida.id_comida
-        )
-    ).join(
-        Alimento, Alimento.id_alimento == AC.id_alimento
-    ).filter(
-        HistComida.fecha_ini == date,
-        Comida.id_paciente == result.id_paciente,
-        Comida.id_comida == comida
-    ).all()
+        Alimento.cantidad,
+        Alimento.tipo.label('tipo_alimento'),
+        Comida.fecha_ini,
+        Comida.tipo,
+        Comida.satisfaccion,
+        Comida.comentario
+    ).select_from(Comida).\
+    join(AC, Comida.id_paciente == AC.id_paciente).\
+    join(Alimento, Alimento.id_alimento == AC.id_alimento).\
+    filter(
+        Comida.fecha_ini == date,  # Asegúrate de que esta fecha sea correcta
+        Comida.id_paciente == id,
+        AC.fecha_ini == Comida.fecha_ini
+    ).distinct().all()
    
     db.session.close()
 
     date_obj = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
-    date_formatted = date_obj.strftime("%B, %d %Y")
+    date_formatted = date_obj.strftime("%B, %d %Y a las %H:%M")
 
-    return render_template("p_detalle.html", result=result, datos=datos, date=date, comida=comida, date_formatted=date_formatted)
+    return render_template("p_detalle.html", get_pac=get_pac, datos=datos, date=date, date_formatted=date_formatted)
 # // > FIXME:
 
 
