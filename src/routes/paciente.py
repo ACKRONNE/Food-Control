@@ -173,8 +173,7 @@ def addFood(id):
         tipo_comida = request.form['tipo-comida']
         satisfaccion = request.form['satisfaccion']
         comentario = request.form['comentario']
-        fecha_ini = '2024-07-15'
-        fecha_fin = '2024-07-15'
+        fecha_ini = request.form['fecha-ini']
 
         id_espe = 1  # Reemplaza esto con el ID correcto del especialista
 
@@ -209,21 +208,6 @@ def addFood(id):
 
             print("Registro de alimento agregado con exito")
             flash("Registro de alimento agregado con exito")
-        # //
-
-        # 
-        new_hist_comida = HistComida (
-            get_pac.id_paciente,
-            id_espe,
-            new_comida.id_comida,
-            fecha_ini, 
-            satisfaccion,
-            comentario,
-            fecha_fin
-        )
-        db.session.add(new_hist_comida)
-        print("Historico Agregado con exito")
-        flash("Historico Agregado con exito")
         # //
 
         db.session.commit()
