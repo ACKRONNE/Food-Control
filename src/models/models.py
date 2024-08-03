@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Date, CheckConstraint, PrimaryKeyConstraint, ForeignKey, Integer, ForeignKeyConstraint
+from sqlalchemy import Column, String, DateTime, Date, CheckConstraint, PrimaryKeyConstraint, ForeignKey, Integer, ForeignKeyConstraint
 from src.database.db import db
 
 # 1
@@ -11,7 +11,7 @@ class Paciente(db.Model):
   seg_apellido = Column(String(40), nullable=False)
   sexo = Column(String(1), nullable=False)
   correo = Column(String(40), nullable=False, unique=True)
-  telefono = Column(String(17), nullable=False)
+  telefono = Column(Integer, nullable=False)
   clave = Column(String(255), nullable=False)
   fecha_nacimiento = Column(Date, nullable=False)
   seg_nombre = Column(String(40))
@@ -42,7 +42,7 @@ class Especialista(db.Model):
     seg_apellido = Column(String(40), nullable=False)
     sexo = Column(String(1), nullable=False)
     correo = Column(String(40), nullable=False, unique=True)
-    telefono = Column(String(17), nullable=False)
+    telefono = Column(Integer, nullable=False)
     clave = Column(String(255), nullable=False)
     especialidad = Column(String(80), nullable=False)
     seg_nombre = Column(String(40))
@@ -88,66 +88,43 @@ class Comida(db.Model):
 
     id_paciente = Column(Integer, ForeignKey('pacientes.id_paciente'), nullable=False)
     id_espe = Column(Integer, ForeignKey('especialistas.id_espe'), nullable=False)
-    id_comida = Column(Integer, nullable=False, autoincrement=True)
+    fecha_ini = Column(DateTime, nullable=False)
     tipo = Column(String(1), nullable=False)
+    satisfaccion = Column(String(255), nullable=False)
+    comentario = Column(String(255))
 
     __table_args__ = (
-        PrimaryKeyConstraint('id_paciente', 'id_espe', 'id_comida'),
+        PrimaryKeyConstraint('id_paciente', 'id_espe', 'fecha_ini'),
         CheckConstraint("tipo IN ('D', 'A', 'C', 'M')", name='check_tipo'),
     )
 
-    def __init__(self, id_paciente, id_espe, tipo):
+    def __init__(self, id_paciente, id_espe, fecha_ini, tipo, satisfaccion, comentario=None):
         self.id_paciente = id_paciente
         self.id_espe = id_espe
+        self.fecha_ini = fecha_ini
         self.tipo = tipo
+        self.satisfaccion = satisfaccion
+        self.comentario = comentario
 # //
 
 # 5
-class HistComida(db.Model):
-    __tablename__ = 'hist_comida'
-
-    id_paciente = Column(Integer)
-    id_espe = Column(Integer)
-    id_comida = Column(Integer)
-    fecha_ini = Column(Date)
-    satisfaccion = Column(String(40), nullable=False)
-    comentario = Column(String(40))
-    fecha_fin = Column(Date)
-
-    __table_args__ = (
-        ForeignKeyConstraint(['id_paciente', 'id_espe', 'id_comida'], ['comidas.id_paciente', 'comidas.id_espe', 'comidas.id_comida'], ondelete='CASCADE'),
-        PrimaryKeyConstraint('id_paciente', 'id_espe', 'id_comida', 'fecha_ini'),
-        CheckConstraint("satisfaccion IN ('Cansado', 'Mal', 'No muy bien', 'Normal', 'Bien', 'Super')", name='check_satisfaccion'),
-    )
-
-    def __init__(self, id_paciente, id_espe, id_comida, fecha_ini, satisfaccion, comentario=None, fecha_fin=None):
-        self.id_paciente = id_paciente
-        self.id_espe = id_espe
-        self.id_comida = id_comida
-        self.fecha_ini = fecha_ini
-        self.satisfaccion = satisfaccion
-        self.comentario = comentario
-        self.fecha_fin = fecha_fin
-# //
-
-# 6
 class AC(db.Model):
   __tablename__ = 'a_c'
   
   id_paciente = Column(Integer)
   id_espe = Column(Integer)
-  id_comida = Column(Integer)
+  fecha_ini = Column(DateTime)
   id_alimento = Column(Integer)
 
   __table_args__ = (
-      ForeignKeyConstraint(['id_paciente', 'id_espe', 'id_comida'], ['comidas.id_paciente', 'comidas.id_espe', 'comidas.id_comida'], ondelete='CASCADE'),
+      ForeignKeyConstraint(['id_paciente', 'id_espe', 'fecha_ini'], ['comidas.id_paciente', 'comidas.id_espe', 'comidas.fecha_ini'], ondelete='CASCADE'),
       ForeignKeyConstraint(['id_alimento'], ['alimentos.id_alimento'], ondelete='CASCADE'),
-      PrimaryKeyConstraint('id_paciente', 'id_espe', 'id_comida', 'id_alimento'),
+      PrimaryKeyConstraint('id_paciente', 'id_espe', 'fecha_ini', 'id_alimento'),
   )
   
-  def __init__(self, id_paciente, id_espe, id_comida, id_alimento):
+  def __init__(self, id_paciente, id_espe, fecha_ini, id_alimento):
     self.id_paciente = id_paciente
     self.id_espe = id_espe
-    self.id_comida = id_comida
+    self.fecha_ini = fecha_ini
     self.id_alimento = id_alimento
 # //

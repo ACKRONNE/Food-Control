@@ -4,7 +4,7 @@ from src.database.db import db
 
 
 # Entidades
-from src.models.models import Paciente, Especialista, Alimento, Comida, AC, HistComida
+from src.models.models import Paciente, Especialista, Alimento, Comida, AC
 # //
 
 ind = Blueprint('index', __name__)

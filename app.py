@@ -13,7 +13,7 @@ import os
 # //
 
 # Modelos
-from src.models.models import Especialista, Paciente, Alimento, Comida, AC, HistComida
+from src.models.models import Especialista, Paciente, Alimento, Comida, AC
 # //
 
 load_dotenv()

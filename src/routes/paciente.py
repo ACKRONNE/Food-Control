@@ -6,7 +6,7 @@ from src.database.db import db
 from datetime import datetime
 
 # Entidades
-from src.models.models import Especialista, Paciente, Comida, AC, Alimento, HistComida
+from src.models.models import Especialista, Paciente, Comida, AC, Alimento
 # //
 
 # FIXME: Hay que agregar los try-catch en todos los metodos
@@ -87,13 +87,13 @@ def inicio(id):
         tipo = db.session.query(Comida.tipo, Comida.id_comida).join(
             HistComida, 
             and_(
-                Comida.id_paciente == HistComida.id_paciente,
-                Comida.id_espe == HistComida.id_espe,
-                Comida.id_comida == HistComida.id_comida
+                Comida.id_paciente == HistComida.id_paciente, 
+                Comida.id_espe == HistComida.id_espe, 
+                Comida.id_comida == HistComida.id_comida 
             )
         ).filter(
             Comida.id_paciente == result.id_paciente,
-            HistComida.fecha_ini == fecha
+            HistComida.fecha_ini == fecha.date() 
         ).all()      
         # //
 
@@ -167,8 +167,6 @@ def addFood(id):
     if get_pac is None:
         flash('Paciente no encontrado.', 'danger')
         return redirect(url_for('index.index')) 
-    
-    print(get_pac)
 
     if request.method == 'POST':
 
@@ -183,7 +181,10 @@ def addFood(id):
         new_comida = Comida(
             get_pac.id_paciente,
             id_espe,
-            tipo_comida
+            fecha_ini,
+            tipo_comida,
+            satisfaccion,
+            comentario
         )
         db.session.add(new_comida)
         db.session.commit()
@@ -194,12 +195,14 @@ def addFood(id):
 
         _alimento = request.form.getlist('proteinas[]')
 
+        print(_alimento)
+
         # FIXME: No está funcionando
         for alimento in _alimento:
             new_ac = AC(
                 get_pac.id_paciente,
                 id_espe,
-                new_comida.id_comida,
+                fecha_ini,
                 alimento
             )
             db.session.add(new_ac)

@@ -3,7 +3,7 @@ VALUES (1,'Kimberly','Kardashian','West','F','paciente@gmail.com',555123456,'123
 (2,'María','García','López','F','paciente2@email.com',555123457,'1234','1985-08-22','Ana'),
 (3,'Carlos','Rodríguez','Martínez','M','paciente3@email.com',555123458,'1234','1998-02-10','Laura');
 
-INSERT INTO especialistas 
+INSERT INTO especialitas 
 VALUES (1,'Leonel','Messi','Rocusso','M','especialista@gmail.com',555987653,'1234','Nutricionista','Andres'),
 (2,'Alejandro','Martínez','López','M','especialista2@email.com',555987654,'1234','Dietista','Carolina'),
 (3,'Laura','Rodríguez','Sánchez','F','especialista3@email.com',555987655,'1234','Nutricionista','Juan');
@@ -36,31 +36,25 @@ VALUES (1,'Proteina','Pollo',1),
 (25,'Otros','Tofu',1);
 
 INSERT INTO comidas
-VALUES (1,1,1,'D'),
-(1,1,2,'A'),
-(1,2,3,'D'),
-(1,2,4,'A');
-
-INSERT INTO hist_comida
-VALUES (1,1,1,'2023-07-15','Mal','No me gusta','2023-06-18'),
-(1,1,2,'2023-07-15','Super','estuvo pesima ','2023-03-20'),
-(1,2,3,'2023-03-15','Normal','todo el tiempo lo mismo','2023-07-10'),
-(1,2,4,'2023-03-15','Super','la combinacion estaba deliciosa','2023-09-02');
+VALUES (1,1,'2023-07-15 8:00:00','D','Mal','No me gusta'),
+(1,1,'2023-07-15 12:00:00','A','Super','estuvo pesima '),
+(1,2,'2023-03-15 8:00:00','D','Normal','todo el tiempo lo mismo'),
+(1,2,'2023-03-15 12:00:00','A','Super','la combinacion estaba deliciosa');
 
 INSERT INTO a_c
-VALUES (1,1,1,1),
-(1,1,1,2),
-(1,1,1,3),
-(1,1,1,4),
-(1,1,2,5),
-(1,1,2,6),
-(1,1,2,7),
-(1,1,2,8),
-(1,2,3,9),
-(1,2,3,10),
-(1,2,3,11),
-(1,2,3,12),
-(1,2,4,13),
-(1,2,4,14),
-(1,2,4,15),
-(1,2,4,16);
+VALUES (1,1,'2023-07-15 8:00:00',1),
+(1,1,'2023-07-15 8:00:00',2),
+(1,1,'2023-07-15 8:00:00',3),
+(1,1,'2023-07-15 8:00:00',4),
+(1,1,'2023-03-15 12:00:00',5),
+(1,1,'2023-03-15 12:00:00',6),
+(1,1,'2023-03-15 12:00:00',7),
+(1,1,'2023-03-15 12:00:00',8),
+(1,2,'2023-07-15 8:00:00',9),
+(1,2,'2023-07-15 8:00:00',10),
+(1,2,'2023-07-15 8:00:00',11),
+(1,2,'2023-07-15 8:00:00',12),
+(1,2,'2023-03-15 12:00:00',13),
+(1,2,'2023-03-15 12:00:00',14),
+(1,2,'2023-03-15 12:00:00',15),
+(1,2,'2023-03-15 12:00:00',16);

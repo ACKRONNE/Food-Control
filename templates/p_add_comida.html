@@ -18,13 +18,13 @@
       </div>
     </div>
 
-    <!-- Zona de Alimentos -->
+    <!-- Alimentos -->
     <div class="proteinas" id="proteinas">
       <div class="row group">
           <div class="column">
               <div class="form-group">
                   <label>Proteina</label>
-                  <select id="ali-nombre-proteina" name="ali-nombre-proteina[]">
+                  <select id="proteinas[]" name="proteinas[]">
                       <option value="">Selecciona el nombre</option>
                       {% for proteina in get_prot %}
                           <option value="{{ proteina.id_alimento }}">{{ proteina.nombre }}</option>
@@ -63,7 +63,8 @@
 
 <!-- ZONA DE SCRIPTS -->
 <script>
-  // Para que funcione la entrada multiple de datos en proteina
+
+// Para que funcione la entrada multiple de datos en proteina
 var proteinaIndex = 0;
 
 document.getElementById('add-proteina').addEventListener('click', function() {
@@ -75,7 +76,7 @@ document.getElementById('add-proteina').addEventListener('click', function() {
         <div class="column">
             <div class="form-group">
                 <label>Nombre proteina</label>
-                <select id="ali-nombre-proteina-" name="ali-nombre-proteina[]">
+                <select id="proteinas[]" name="proteinas[]">
                     <option value="">Selecciona el nombre</option>
                     {% for proteina in get_prot %}
                         <option value="{{ proteina.id_alimento }}">{{ proteina.nombre }}</option>
@@ -96,9 +97,8 @@ document.getElementById('proteinas').addEventListener('click', function(e) {
         e.target.parentNode.remove();
     }
 });
-// // Remove
+// // 
 
-// // Entrada multiple
 </script>
 <!-- // SCRIPTS -->
 {% endblock body %}
