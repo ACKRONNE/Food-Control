@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from werkzeug.security import generate_password_hash
 from sqlalchemy.orm import aliased
 from sqlalchemy import and_, or_, cast, Date
@@ -266,6 +266,7 @@ def updateFood(id, date):
     datos = db.session.query(
         Alimento.nombre,
         Alimento.cantidad,
+        Alimento.id_alimento,
         Alimento.tipo.label('tipo_alimento'),
         Comida.fecha_ini,
         Comida.tipo,
@@ -301,16 +302,27 @@ def updateFood(id, date):
             _alimento = request.form.getlist('alimentos[]')
 
             for alimento in _alimento:
-                new_ac = AC(
-                    get_pac.id_paciente,
-                    comida.id_espe,
-                    date,
-                    alimento
-                )
-                db.session.add(new_ac)
+                if alimento:
+                    # Verificar si el alimento ya existe
+                    existing_ac = db.session.query(AC).filter(
+                        AC.id_paciente == get_pac.id_paciente,
+                        AC.id_espe == comida.id_espe,
+                        AC.fecha_ini == date,
+                        AC.id_alimento == alimento
+                    ).first()
 
-                print("Registro de alimento agregado con exito")
-                flash("Registro de alimento agregado con exito")
+                    if existing_ac is None:
+                        new_ac = AC(
+                            get_pac.id_paciente,
+                            comida.id_espe,
+                            date,
+                            alimento
+                        )
+                        db.session.add(new_ac)
+                        print("Registro de alimento agregado con exito")
+                        flash("Registro de alimento agregado con exito")
+                    else:
+                        print("El alimento ya ha sido agregado anteriormente")
 
             db.session.commit()
         except Exception as e:
@@ -322,7 +334,29 @@ def updateFood(id, date):
 
         return redirect(url_for('paciente.inicio', id=id))
     
-    return render_template('p_editar_comida.html', id=id, get_pac=get_pac, get_ali=get_ali, date=date, datos=datos, date_formatted=date_formatted) 
+    return render_template('p_editar_comida.html', id=id, get_pac=get_pac, get_ali=get_ali, date=date, datos=datos, date_formatted=date_formatted)
+# Funcion para eliminar un alimento dentro de la comida
+@pac.route('/eliminar_alimento/<int:id_alimento>/<date>/<int:id>', methods=['DELETE'])
+def eliminar_alimento(id_alimento, date, id):
+    try:
+        print(id_alimento, date, id)
+        ac_record = db.session.query(AC).filter(
+            AC.id_alimento == id_alimento,
+            AC.id_paciente == id,
+            AC.fecha_ini == date
+        ).first()
+        if ac_record:
+            db.session.delete(ac_record)
+            db.session.commit()
+            return jsonify({'message': 'Alimento eliminado con éxito.'}), 200
+        else:
+            return jsonify({'message': 'Alimento no encontrado.'}), 404
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'Error al eliminar el alimento: {e}'}), 500
+    finally:
+        db.session.close()
+# >
 
 # Ver Especialistas <
 @pac.route('/ver_especialistas/<id>', methods=['GET'])

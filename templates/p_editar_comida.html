@@ -41,15 +41,16 @@
             </div>
         </div>
         <ul id="selected-alimentos">
-            {% for alimento in selected_alimentos %}
+            {% for alimento in datos %}
                 <li data-id="{{ alimento.id_alimento }}">
                     {{ alimento.nombre }}
+                    <input type="hidden" name="alimentos[]" value="{{ alimento.id_alimento }}">
                     <button type="button" class="remove-alimento">Eliminar</button>
                 </li>
             {% endfor %}
         </ul>
     </div>
-    <!-- -- -->
+    <!-- // -->
 
     <label for="satisfaccion">Satisfacción</label>
     <input type="text" id="satisfaccion" name="satisfaccion" value="{{ datos[0].satisfaccion if datos else '' }}" required><br>
@@ -65,26 +66,61 @@
 
 // Para que funcione la entrada multiple de datos en alimento
 document.getElementById('add-alimento').addEventListener('click', function() {
-    var select = document.getElementById('alimentos-select');
-    var selectedValue = select.value;
-    var selectedText = select.options[select.selectedIndex].text;
+    var select = document.querySelector('select');
+    var selectedOption = select.options[select.selectedIndex];
+    var selectedAlimentos = document.getElementById('selected-alimentos');
+    var exists = false;
 
-    if (selectedValue) {
-        var ul = document.getElementById('selected-alimentos');
+    selectedAlimentos.querySelectorAll('li').forEach(function(li) {
+        if (li.getAttribute('data-id') === selectedOption.value) {
+            exists = true;
+        }
+    });
+
+    if (!exists) {
         var li = document.createElement('li');
-        li.setAttribute('data-id', selectedValue);
-        li.innerHTML = selectedText + ' <button type="button" class="remove-alimento">Eliminar</button>';
-        ul.appendChild(li);
-
-        // Clear the selection
-        select.value = '';
+        li.setAttribute('data-id', selectedOption.value);
+        li.innerHTML = selectedOption.text + 
+            '<input type="hidden" name="alimentos[]" value="' + selectedOption.value + '">' +
+            '<button type="button" class="remove-alimento">Eliminar</button>';
+        selectedAlimentos.appendChild(li);
+    } else {
+        alert('El alimento ya ha sido agregado.');
     }
 });
 
 document.getElementById('selected-alimentos').addEventListener('click', function(e) {
     if (e.target && e.target.classList.contains('remove-alimento')) {
         var li = e.target.parentElement;
-        li.parentElement.removeChild(li);
+        var alimentoId = li.getAttribute('data-id');
+        var date = "{{ date }}";
+        var pacienteId = "{{ get_pac.id_paciente }}";
+
+        console.log('Alimento ID:', alimentoId);
+        console.log('Date:', date);
+        console.log('Paciente ID:', pacienteId);
+
+        if (!alimentoId) {
+            alert("Error: Alimento ID is missing.");
+            return;
+        }
+
+        fetch(`/eliminar_alimento/${alimentoId}/${date}/${pacienteId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                li.parentElement.removeChild(li);
+                alert("Alimento eliminado con éxito.");
+            } else {
+                alert("Error al eliminar el alimento.");
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert("Error al eliminar el alimento.");
+        });
     }
 });
 // // 

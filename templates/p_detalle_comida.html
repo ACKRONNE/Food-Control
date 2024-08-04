@@ -4,9 +4,10 @@
 
 {% block body %}
 
-  <!-- Static title -->
-  <a href="{{ url_for('paciente.inicio', id=get_pac.id_paciente) }}">Volver</a>
-  <a href="{{ url_for('paciente.perfil', id=get_pac.id_paciente) }}">Perfil</a>
+<!-- Static title -->
+<a href="{{ url_for('paciente.inicio', id=get_pac.id_paciente) }}">Volver</a>
+<a href="{{ url_for('paciente.perfil', id=get_pac.id_paciente) }}">Perfil</a>
+<a href="{{ url_for('paciente.updateFood', id=get_pac.id_paciente, date=date) }}">Modificar</a>        
   <h1>Detalle Comida</h1>
   <!-- // -->
 
@@ -116,5 +117,6 @@
 
         <h1>Comentario</h1>
         <label>{{datos[0].comentario}}</label>
+
 
 {% endblock %}
