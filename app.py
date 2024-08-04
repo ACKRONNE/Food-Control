@@ -12,10 +12,6 @@ from dotenv import load_dotenv
 import os
 # //
 
-# Modelos
-from src.models.models import Especialista, Paciente, Alimento, Comida, AC
-# //
-
 load_dotenv()
 
 app = Flask(__name__)

@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block title %}Registro Especialista{% endblock %}
+
+{% block body %}
+
+<!-- Static title -->
+  <a href="{{ url_for('index.registro') }}">Volver</a>
+  <h1>Registro</h1>
+  <!-- // -->
+
+    <!-- Action form -->
+    <form action="{{ url_for('especialista.registro') }}" method="POST" class="form-control">
+        
+        <label>Correo Electrónico</label>
+        <input type="email" id="esp-correo" name="esp-correo" placeholder="Correo electrónico" required>
+
+        <div class="Paciente Info">
+        <label>Primer Nombre</label>
+        <input type="text" id="esp-pri-nombre" name="esp-pri-nombre" placeholder="Primer nombre" required>
+        
+        <label>Segundo Nombre</label>
+        <input type="text" id="esp-seg-nombre" name="esp-seg-nombre" placeholder="Segundo nombre">      
+        
+        <label>Primer Apellido</label>
+        <input type="text" id="esp-pri-apellido" name="esp-pri-apellido" placeholder="Primer apellido" required>
+        
+        <label>Segundo Apellido</label>
+        <input type="text" id="esp-seg-apellido" name="esp-seg-apellido" placeholder="Segundo apellido" required>
+        
+        <div class="form-group">
+            <label>Género</label>
+            <div requiere>
+            <label><input type="radio" name="esp-sexo" value="M">Hombre</label><br>
+            <label><input type="radio" name="esp-sexo" value="F">Mujer</label><br>
+            <label><input type="radio" name="esp-sexo" value="O">Prefiero no decirlo</label><br>
+            </div>
+        </div>
+        
+        <label>Teléfono</label>
+        <input type="tel" id="esp-telefono" name="esp-telefono" placeholder="Teléfono" required>
+        
+        <label>Contraseña</label>
+        <input type="password" id="esp-clave" name="esp-clave" placeholder="Contraseña" required>
+        
+        <label>Especialidad</label>
+        <input type="text" id="esp-especialidad" name="esp-especialidad" placeholder="Especialidad" required>
+        
+        <!-- Boton -->
+        <div class="button-container">
+            <button class="submit-btn" type="submit">Aceptar</button>
+        </div>
+        <!-- // -->
+
+    </form>
+
+    <a href="{{ url_for('static', filename='terms_conditions.html') }}">Al continuar acepta nuestros términos y condiciones.</a>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            var sexo = document.querySelector('input[name="esp-sexo"]:checked');
+            if (!sexo) {
+                alert('Por favor, selecciona una opción de género.');
+                event.preventDefault();
+            }
+        });
+    </script>
+{% endblock body %}

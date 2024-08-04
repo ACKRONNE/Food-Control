@@ -1,4 +1,3 @@
-
 {% extends 'layout.html' %}
 
 {% block title %}Tipo Usuario{% endblock %}
@@ -12,6 +11,6 @@
 
     <!-- Buttons -->
     <a href="{{ url_for('paciente.registro') }}">paciente</a>
-    <a href="#">especialista</a>
+    <a href="{{ url_for('especialista.registro') }}">especialista</a>
 
 {% endblock %}
