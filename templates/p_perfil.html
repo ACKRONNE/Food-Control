@@ -29,4 +29,5 @@
         <form action="{{ url_for('paciente.deleteAccount', id=paciente.id_paciente) }}" method="post">
             <input type="submit" value="Eliminar Cuenta">
         </form>
+        <a href="{{ url_for('index.logout', id=paciente.id_paciente) }}">Cerrar Sesion</a>
 {% endblock %}

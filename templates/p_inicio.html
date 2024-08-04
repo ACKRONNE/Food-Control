@@ -48,7 +48,7 @@
 
         <a href="{{ url_for('paciente.foodDetail', id=get_pac.id_paciente, date=comida.fecha_ini) }}">></a> 
         <a href="{{ url_for('paciente.updateFood', id=get_pac.id_paciente, date=comida.fecha_ini) }}">update</a> 
-        <a href="/#">delete</a>
+        <a href="{{ url_for('paciente.deleteFood', id=get_pac.id_paciente, date=comida.fecha_ini) }}">delete</a>
     </li>
     {% endfor %}
 </ul>

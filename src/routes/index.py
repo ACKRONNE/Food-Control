@@ -70,10 +70,10 @@ def logout(id):
     if user is None:
         return "Usuario no encontrado"
 
-    if user.id_persona == int(id):
+    if (user.id_paciente == int(id) or user.id_empleado == int(id)):
         session.pop('id', None)
         session.clear()
-        return redirect(url_for('log.index'))
+        return redirect(url_for('index.index'))
     else:
         return "Error 404, No se pudo cerrar la sesion"
 # // >

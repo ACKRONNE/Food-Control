@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from werkzeug.security import generate_password_hash
 from sqlalchemy.orm import aliased
-from sqlalchemy import and_, or_, cast, Date
+from sqlalchemy import cast, Date
 from src.database.db import db
 from datetime import datetime
 
@@ -57,7 +57,6 @@ def registro():
       return render_template('p_registro.html')
 # // > 
 
-
 # Inicio <
 @pac.route('/inicio/<id>', methods=['GET', 'POST'])
 def inicio(id):
@@ -68,6 +67,13 @@ def inicio(id):
     if get_pac is None:
         flash('Paciente no encontrado.', 'danger')
         return redirect(url_for('index.index')) 
+    # //
+
+    # Consulta de las comidas del paciente
+    tipo = (
+        db.session.query(Comida.tipo, Comida.fecha_ini)
+        .filter(Comida.id_paciente == id)
+    ).all()
     # //
 
     # Fecha Actual
@@ -335,6 +341,7 @@ def updateFood(id, date):
         return redirect(url_for('paciente.inicio', id=id))
     
     return render_template('p_editar_comida.html', id=id, get_pac=get_pac, get_ali=get_ali, date=date, datos=datos, date_formatted=date_formatted)
+
 # Funcion para eliminar un alimento dentro de la comida
 @pac.route('/eliminar_alimento/<int:id_alimento>/<date>/<int:id>', methods=['DELETE'])
 def eliminar_alimento(id_alimento, date, id):
@@ -356,7 +363,31 @@ def eliminar_alimento(id_alimento, date, id):
         return jsonify({'message': f'Error al eliminar el alimento: {e}'}), 500
     finally:
         db.session.close()
+# // >
 # >
+
+# Eliminar Comida <
+@pac.route('/eliminar_comida/<id>/<date>', methods=['GET', 'POST'])
+def deleteFood(id, date):
+    try:
+        comida = db.session.query(Comida).filter(
+            Comida.id_paciente == id,
+            Comida.fecha_ini == date
+        ).first()
+        if comida:
+            db.session.delete(comida)
+            db.session.commit()
+            return redirect(url_for('paciente.inicio', id=id))
+        else:
+            flash("Comida no encontrada", "danger")
+            return redirect(url_for('paciente.inicio', id=id))
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error al eliminar la comida: {e}", "danger")
+        return redirect(url_for('paciente.inicio', id=id))
+    finally:
+        db.session.close()
+# // >
 
 # Ver Especialistas <
 @pac.route('/ver_especialistas/<id>', methods=['GET'])
