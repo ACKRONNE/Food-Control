@@ -10,7 +10,7 @@
   <form action="{{ url_for('paciente.addFood', id=get_pac.id_paciente) }}" method="POST" class="form-control">
     
     <div class="form-group">
-      <div requiere>
+      <div required>
       <label><input type="radio" name="tipo-comida" value="D">Desayuno</label><br>
       <label><input type="radio" name="tipo-comida" value="A">Almuerzo</label><br>
       <label><input type="radio" name="tipo-comida" value="C">Cena</label><br>
@@ -20,20 +20,29 @@
 
     <!-- Alimentos -->
     <div class="alimentos" id="alimentos">
-      <div class="row group">
-          <div class="column">
-              <div class="form-group">
-                  <label>Alimento</label>
-                  <select id="alimentos[]" name="alimentos[]">
-                      <option value="">Selecciona el nombre</option>
-                      {% for alimento in get_ali %}
-                          <option value="{{ alimento.id_alimento }}">{{ alimento.nombre }}</option>
-                      {% endfor %}
-                  </select>
-              </div>
-          </div>
-      </div>
-      <button type="button" id="add-alimento">Agregar otro Alimento</button>
+        <div class="row group">
+            <div class="column">
+                <div class="form-group">
+                    <label>Alimento</label>
+                    <select id="alimentos-select" name="alimentos[]">
+                        <option value="">Selecciona el nombre</option>
+                        {% for alimento in get_ali %}
+                            <option value="{{ alimento.id_alimento }}">{{ alimento.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" id="add-alimento">Agregar otro Alimento</button>
+                </div>
+            </div>
+        </div>
+        <ul id="selected-alimentos">
+            {% for alimento in selected_alimentos %}
+                <li data-id="{{ alimento.id_alimento }}">
+                    {{ alimento.nombre }}
+                    <input type="hidden" name="alimentos[]" value="{{ alimento.id_alimento }}">
+                    <button type="button" class="remove-alimento">Eliminar</button>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
     <!-- // -->
 
@@ -68,35 +77,28 @@
 <script>
 
 // Para que funcione la entrada multiple de datos en alimento
-var alimentoIndex = 0;
-
 document.getElementById('add-alimento').addEventListener('click', function() {
-    var alimentos = document.getElementById('alimentos');
-    var newAlimento = document.createElement('div');
-    newAlimento.className = 'alimento';
-    newAlimento.innerHTML = `
-    <div class="row group">
-        <div class="column">
-            <div class="form-group">
-                <select id="alimentos[]" name="alimentos[]">
-                    <option value="">Selecciona el nombre</option>
-                    {% for alimento in get_ali %}
-                        <option value="{{ alimento.id_alimento }}">{{ alimento.nombre }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-    </div>
-    <button type="button" class="remove-alimento">Eliminar</button>
-    `;
-    alimentos.appendChild(newAlimento);
-    alimentoIndex++;
+    var select = document.getElementById('alimentos-select');
+    var selectedValue = select.value;
+    var selectedText = select.options[select.selectedIndex].text;
+
+    if (selectedValue) {
+        var ul = document.getElementById('selected-alimentos');
+        var li = document.createElement('li');
+        li.setAttribute('data-id', selectedValue);
+        li.innerHTML = selectedText + ' <input type="hidden" name="alimentos[]" value="' + selectedValue + '"> <button type="button" class="remove-alimento">Eliminar</button>';
+        ul.appendChild(li);
+
+        select.value = '';
+    } else {
+        alert("Por favor selecciona un alimento válido.");
+    }
 });
 
-// Remover un elemento alimento
-document.getElementById('alimentos').addEventListener('click', function(e) {
+document.getElementById('selected-alimentos').addEventListener('click', function(e) {
     if (e.target && e.target.classList.contains('remove-alimento')) {
-        e.target.parentNode.remove();
+        var li = e.target.parentElement;
+        li.parentElement.removeChild(li);
     }
 });
 // // 

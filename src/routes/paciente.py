@@ -188,16 +188,17 @@ def addFood(id):
             _alimento = request.form.getlist('alimentos[]')
 
             for alimento in _alimento:
-                new_ac = AC(
-                    get_pac.id_paciente,
-                    id_espe,
-                    fecha_ini,
-                    alimento
-                )
-                db.session.add(new_ac)
+                if alimento:
+                    new_ac = AC(
+                        get_pac.id_paciente,
+                        id_espe,
+                        fecha_ini,
+                        alimento
+                    )
+                    db.session.add(new_ac)
 
-                print("Registro de alimento agregado con exito")
-                flash("Registro de alimento agregado con exito")
+                    print("Registro de alimento agregado con exito")
+                    flash("Registro de alimento agregado con exito")
 
             db.session.commit()
         except Exception as e:
@@ -215,10 +216,53 @@ def addFood(id):
 # Detalle de comida <
 @pac.route('/detalle_comida/<id>/<date>', methods=["GET"])
 def foodDetail(id, date):
-
-    get_pac = db.session.query(Paciente.id_paciente).filter(Paciente.id_paciente == id).first()
+    try:
+        get_pac = db.session.query(Paciente.id_paciente).filter(Paciente.id_paciente == id).first()
     
-    # Consulta de SQLAlchemy 
+        datos = db.session.query(
+            Alimento.nombre,
+            Alimento.cantidad,
+            Alimento.tipo.label('tipo_alimento'),
+            Comida.fecha_ini,
+            Comida.tipo,
+            Comida.satisfaccion,
+            Comida.comentario
+        ).select_from(Comida).\
+        join(AC, Comida.id_paciente == AC.id_paciente).\
+        join(Alimento, Alimento.id_alimento == AC.id_alimento).\
+        filter(
+            Comida.fecha_ini == date, 
+            Comida.id_paciente == id,
+            AC.fecha_ini == Comida.fecha_ini
+        ).distinct().all()
+       
+        db.session.close()
+
+        date_obj = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+        date_formatted = date_obj.strftime("%B, %d %Y a las %H:%M")
+
+        return render_template("p_detalle_comida.html", get_pac=get_pac, datos=datos, date=date, date_formatted=date_formatted)
+    
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error en el Detalle de Comida: {e}")
+        return render_template(url_for('paciente.inicio', id=id))
+# // >
+
+# Modificar Comida <
+@pac.route('/editar_comida/<id>/<date>', methods=['GET', 'POST'])
+def updateFood(id, date):
+
+    get_pac = db.session.query(Paciente).filter(Paciente.id_paciente == id).first()
+    get_ali = db.session.query(Alimento).all()
+
+    if get_pac is None:
+        flash('Paciente no encontrado.', 'danger')
+        return redirect(url_for('index.index')) 
+    
+    date_obj = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+    date_formatted = date_obj.strftime("%B, %d %Y a las %H:%M")
+
     datos = db.session.query(
         Alimento.nombre,
         Alimento.cantidad,
@@ -231,20 +275,54 @@ def foodDetail(id, date):
     join(AC, Comida.id_paciente == AC.id_paciente).\
     join(Alimento, Alimento.id_alimento == AC.id_alimento).\
     filter(
-        Comida.fecha_ini == date,  # Asegúrate de que esta fecha sea correcta
+        Comida.fecha_ini == date, 
         Comida.id_paciente == id,
         AC.fecha_ini == Comida.fecha_ini
-    ).distinct().all()
-   
-    db.session.close()
+    ).distinct().all()       
+             
+    if request.method == 'POST':
+        try:
 
-    date_obj = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
-    date_formatted = date_obj.strftime("%B, %d %Y a las %H:%M")
+            tipo_comida = request.form['tipo-comida']
+            satisfaccion = request.form['satisfaccion']
+            comentario = request.form['comentario']
 
-    return render_template("p_detalle_comida.html", get_pac=get_pac, datos=datos, date=date, date_formatted=date_formatted)
-# // >
+            comida = db.session.query(Comida).filter(
+                Comida.id_paciente == id,
+                Comida.fecha_ini == date
+            ).first()
 
+            comida.tipo = tipo_comida
+            comida.satisfaccion = satisfaccion
+            comida.comentario = comentario
 
+            db.session.commit()
+
+            _alimento = request.form.getlist('alimentos[]')
+
+            for alimento in _alimento:
+                new_ac = AC(
+                    get_pac.id_paciente,
+                    comida.id_espe,
+                    date,
+                    alimento
+                )
+                db.session.add(new_ac)
+
+                print("Registro de alimento agregado con exito")
+                flash("Registro de alimento agregado con exito")
+
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            flash("Ocurrió un error al modificar la comida.", "danger")
+            print(f"Error: {e}")
+        finally:
+            db.session.close()
+
+        return redirect(url_for('paciente.inicio', id=id))
+    
+    return render_template('p_editar_comida.html', id=id, get_pac=get_pac, get_ali=get_ali, date=date, datos=datos, date_formatted=date_formatted) 
 
 # Ver Especialistas <
 @pac.route('/ver_especialistas/<id>', methods=['GET'])
