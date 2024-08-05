@@ -90,3 +90,19 @@ def perfil(id):
     
     return render_template('e_perfil.html', get_esp=get_esp)
 # //
+
+# Eliminar cuenta <
+@esp.route('/eliminar_especialista/<int:id>', methods=['POST'])
+def deleteAccount(id):
+    get_esp = db.session.query(Especialista).filter(Especialista.id_espe == id).first()
+
+    if get_esp:
+        db.session.delete(get_esp)
+        db.session.commit()
+        db.session.close()
+        flash("Cuenta eliminada correctamente", "success")
+        return redirect(url_for('index.index'))
+    else:
+        flash("Especialista no encontrado", "danger")
+        return redirect(url_for('index.index'))
+# //

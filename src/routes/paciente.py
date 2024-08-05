@@ -121,12 +121,17 @@ def perfil(id):
 @pac.route('/eliminar_cuenta/<id>', methods=['POST'])
 def deleteAccount(id):
     paciente = Paciente.query.get(id)
+
+
     if paciente:
         db.session.delete(paciente)
         db.session.commit()
+        db.session.close()
+        flash("Cuenta eliminada correctamente", "success")
         return redirect(url_for('index.index'))
     else:
-        return "Paciente no encontrado", 404
+        flash("Especialista no encontrado", "danger")
+        return redirect(url_for('index.index'))
 # // >
 
 # Modificar Perfil <
