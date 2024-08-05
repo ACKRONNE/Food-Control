@@ -137,3 +137,15 @@ def deleteAccount(id):
         flash("Especialista no encontrado", "danger")
         return redirect(url_for('index.index'))
 # //
+
+# Detalle Paciente <
+@esp.route('/detalle_paciente/<int:id_espe>/<int:id_pac>', methods=['GET'])
+def detallePaciente(id_espe, id_pac):
+    get_esp = db.session.query(Especialista).filter(Especialista.id_espe == id_espe).first()
+    get_pac = db.session.query(Paciente).filter(Paciente.id_paciente == id_pac).first()
+
+    if get_pac is None:
+        flash("Paciente no encontrado", "danger")
+        return redirect(url_for('especialista.inicio', id=id_espe))
+    
+    return render_template('e_detalle_paciente.html', get_pac=get_pac, get_esp=get_esp)

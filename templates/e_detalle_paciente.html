@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+
+{% block title %}Detalle Paciente{% endblock %}
+
+{% block body %}
+
+  <!-- Static title -->
+  <a href="{{ url_for('especialista.inicio', id=get_esp.id_espe) }}">Volver</a>
+  <a href="{{ url_for('especialista.perfil', id=get_esp.id_espe) }}">Perfil</a>
+  <h1>Especialistas</h1>
+  <!-- // -->
+
+  <h1>{{get_pac.pri_nombre}} {{get_pac.pri_apellido}}</h1>
+  <div>Correo: {{get_pac.correo}}</div>
+  <div>Telefono: {{get_pac.telefono}}</div>
+  <div>Genero: 
+    {% if get_pac.sexo == "M" %}
+        <span>Masculino</span>
+    {% elif get_pac.sexo == "F" %}
+        <span>Femenino</span>
+    {% elif get_pac.sexo == "O" %}
+        <span>Otro</span>
+    {% endif %}
+    </div>
+  <div id="edad"></div>
+
+  <a href="/#">Recetas</a>
+
+
+  <script>
+    const fechaNacimiento = "{{ get_pac.fecha_nacimiento }}"; 
+
+    function calcularEdad(fecha) {
+        const hoy = new Date();
+        const nacimiento = new Date(fecha);
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mes = hoy.getMonth() - nacimiento.getMonth();
+        if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--;
+        }
+        return edad;
+    }
+
+    const edad = calcularEdad(fechaNacimiento);
+    document.getElementById('edad').textContent = `Edad: ${edad}`;
+</script>
+
+{% endblock %}

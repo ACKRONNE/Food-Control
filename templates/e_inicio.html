@@ -26,7 +26,7 @@
         <span>{{paciente.pri_nombre}}</span>
         <span>{{paciente.pri_apellido}}</span>
 
-        <a href="/#">></a>
+        <a href="{{ url_for('especialista.detallePaciente', id_espe=get_esp.id_espe, id_pac=paciente.id_paciente)}}">></a>
 
     </li>
     {% endfor %}
