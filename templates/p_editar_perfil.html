@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %}Update Profile{% endblock %}
+{% block title %}Modificar Perfil{% endblock %}
 
 {% block body %}
 
@@ -26,13 +26,12 @@
         <label>Segundo Apellido</label>
         <input type="text" id="pac-seg-apellido" name="pac-seg-apellido" placeholder="Segundo apellido" value="{{paciente.seg_apellido}}" required>
         
-        <!-- FIXME: Falta hacer que se marque el este check box por defecto y en la fecha -->
         <div class="form-group">
             <label>Género</label>
             <div requiere>
-            <label><input type="radio" name="pac-sexo" value="M">Hombre</label><br>
-            <label><input type="radio" name="pac-sexo" value="F">Mujer</label><br>
-            <label><input type="radio" name="pac-sexo" value="O">Prefiero no decirlo</label><br>
+            <label><input type="radio" name="pac-sexo" value="M" {% if paciente.sexo == "M" %} checked {% endif %}>Hombre</label><br>
+            <label><input type="radio" name="pac-sexo" value="F" {% if paciente.sexo == "F" %} checked {% endif %}>Mujer</label><br>
+            <label><input type="radio" name="pac-sexo" value="O" {% if paciente.sexo == "O" %} checked {% endif %}>Prefiero no decirlo</label><br>
             </div>
         </div>
         
@@ -43,7 +42,7 @@
         <input type="password" id="pac-clave" name="pac-clave" placeholder="Contraseña" value="{{paciente.clave}}" required>
         
         <label>Fecha de Nacimiento</label>
-        <input type="date" id="pac-fecha-nacimiento" name="pac-fecha-nacimiento" placeholder="Fecha de nacimiento" value="{{paciente.fecha_nac}}" required>      
+        <input type="date" id="pac-fecha-nacimiento" name="pac-fecha-nacimiento" placeholder="Fecha de nacimiento" value="{{paciente.fecha_nacimiento}}" required>      
         </div>
         
         <!-- Boton -->

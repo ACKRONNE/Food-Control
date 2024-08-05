@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block title %}Modificar Perfil{% endblock %}
+
+{% block body %}
+
+<a href="{{ url_for('especialista.perfil', id=get_esp.id_espe) }}">Volver</a>
+
+<h1>Modificar</h1>
+
+<form action="{{url_for('especialista.updateProfile', id=get_esp.id_espe)}}" method="POST">
+
+        <label>Correo Electrónico</label>
+        <input type="email" id="esp-correo" name="esp-correo" placeholder="Correo electrónico" value="{{get_esp.correo}}" required>
+
+        <div class="Paciente Info">
+        <label>Primer Nombre</label>
+        <input type="text" id="esp-pri-nombre" name="esp-pri-nombre" placeholder="Primer nombre" value="{{get_esp.pri_nombre}}" required>
+        
+        <label>Segundo Nombre</label>
+        <input type="text" id="esp-seg-nombre" name="esp-seg-nombre" placeholder="Segundo nombre" value="{{get_esp.seg_nombre}}">      
+        
+        <label>Primer Apellido</label>
+        <input type="text" id="esp-pri-apellido" name="esp-pri-apellido" placeholder="Primer apellido" value="{{get_esp.pri_apellido}}" required>
+        
+        <label>Segundo Apellido</label>
+        <input type="text" id="esp-seg-apellido" name="esp-seg-apellido" placeholder="Segundo apellido" value="{{get_esp.seg_apellido}}" required>
+        
+        <div class="form-group">
+            <label>Género</label>
+            <div requiere>
+            <label><input type="radio" name="esp-sexo" value="M" {% if get_esp.sexo == "M" %} checked {% endif %}>Hombre</label><br>
+            <label><input type="radio" name="esp-sexo" value="F" {% if get_esp.sexo == "F" %} checked {% endif %}>Mujer</label><br>
+            <label><input type="radio" name="esp-sexo" value="O" {% if get_esp.sexo == "O" %} checked {% endif %}>Prefiero no decirlo</label><br>
+            </div>
+        </div>
+        
+        <label>Teléfono</label>
+        <input type="tel" id="esp-telefono" name="esp-telefono" placeholder="Teléfono" value="{{get_esp.telefono}}" required>
+        
+        <label>Contraseña</label>
+        <input type="password" id="esp-clave" name="esp-clave" placeholder="Contraseña" value="{{get_esp.clave}}" required>
+        
+        <label>Especialidad</label>
+        <input type="text" id="esp-especialidad" name="esp-especialidad" placeholder="Especialidad" value="{{get_esp.especialidad}}" required>
+        </div>
+        
+        <!-- Boton -->
+        <div class="button-container">
+            <button class="submit-btn" type="submit">Aceptar</button>
+        </div>
+        <!-- // -->
+</form>
+
+{% endblock %}

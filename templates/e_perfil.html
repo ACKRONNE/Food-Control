@@ -23,7 +23,7 @@
         <p>Clave *******</p> 
 
 
-        <a href="{{ url_for('especialista.perfil', id=get_esp.id_espe) }}">Editar Perfil</a>
+        <a href="{{ url_for('especialista.updateProfile', id=get_esp.id_espe) }}">Editar Perfil</a>
         <form action="{{ url_for('especialista.deleteAccount', id=get_esp.id_espe) }}" method="post">
             <input type="submit" value="Eliminar Cuenta">
         </form>

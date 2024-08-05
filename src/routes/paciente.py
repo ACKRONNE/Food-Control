@@ -117,23 +117,6 @@ def perfil(id):
     return render_template("p_perfil.html", id=id, paciente=paciente)
 # // >
 
-# Eliminar Cuenta <
-@pac.route('/eliminar_cuenta/<id>', methods=['POST'])
-def deleteAccount(id):
-    paciente = Paciente.query.get(id)
-
-
-    if paciente:
-        db.session.delete(paciente)
-        db.session.commit()
-        db.session.close()
-        flash("Cuenta eliminada correctamente", "success")
-        return redirect(url_for('index.index'))
-    else:
-        flash("Especialista no encontrado", "danger")
-        return redirect(url_for('index.index'))
-# // >
-
 # Modificar Perfil <
 @pac.route('/editar_perfil/<id>', methods=['GET', 'POST'])
 def updateProfile(id):
@@ -160,10 +143,29 @@ def updateProfile(id):
         paciente.seg_nombre = request.form['pac-seg-nombre']
 
         db.session.commit()
+        db.session.close()
 
+        flash("Perfil actualizado correctamente", "success")
         return render_template('p_editar_perfil.html', paciente=paciente)
     
     return render_template('p_editar_perfil.html', paciente=paciente)
+# // >
+
+# Eliminar Cuenta <
+@pac.route('/eliminar_cuenta/<id>', methods=['POST'])
+def deleteAccount(id):
+    paciente = Paciente.query.get(id)
+
+
+    if paciente:
+        db.session.delete(paciente)
+        db.session.commit()
+        db.session.close()
+        flash("Cuenta eliminada correctamente", "success")
+        return redirect(url_for('index.index'))
+    else:
+        flash("Especialista no encontrado", "danger")
+        return redirect(url_for('index.index'))
 # // >
 
 # FIXME: Agregar una validacion que si o consigue a ningun especialista muestre un mensaje que diga, usted no tienen un especialista asignado por favor contacte a la fundacion para mas informacion

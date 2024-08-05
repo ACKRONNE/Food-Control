@@ -91,6 +91,37 @@ def perfil(id):
     return render_template('e_perfil.html', get_esp=get_esp)
 # //
 
+# Modificar perfil <
+@esp.route('/modificar_especialista/<int:id>', methods=['GET','POST'])
+def updateProfile(id):
+    get_esp = db.session.query(Especialista).filter(Especialista.id_espe == id).first()
+
+    if get_esp is None:
+        flash("Especialista no encontrado", "danger")
+        return redirect(url_for('index.index'))
+
+    if request.method == "POST":
+        get_esp.pri_nombre = request.form['esp-pri-nombre']
+        get_esp.pri_apellido = request.form['esp-pri-apellido']
+        get_esp.seg_apellido = request.form['esp-seg-apellido']
+        get_esp.sexo = request.form['esp-sexo']
+        get_esp.correo = request.form['esp-correo']
+        get_esp.telefono = request.form['esp-telefono']
+        clave = request.form['esp-clave']
+        # Hacer la contraseña segura
+        get_esp.clave = generate_password_hash(clave)   
+        # //        
+        get_esp.especialidad = request.form['esp-especialidad']
+        get_esp.seg_nombre = request.form['esp-seg-nombre']
+
+        db.session.commit()
+        db.session.close()
+
+        flash("Perfil modificado correctamente", "success")
+        return redirect(url_for('especialista.perfil', id=id))
+    else:
+        return render_template('e_editar_perfil.html', get_esp=get_esp)
+    
 # Eliminar cuenta <
 @esp.route('/eliminar_especialista/<int:id>', methods=['POST'])
 def deleteAccount(id):
