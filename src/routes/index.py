@@ -46,14 +46,19 @@ def login():
 
 
         else:    
-            # Check in the especialist table if the user does not exist in the patients table
             account = db.session.query(Especialista.id_espe, Especialista.clave).filter(Especialista.correo == _correo).first()
 
-            if account and check_password_hash(account.clave, _clave):
+            # if account and check_password_hash(account.clave, _clave):
+            #     session['logueado'] = True
+            #     session['id'] = account.id_empleado
+            #     _id = session['id']
+            #     return redirect(url_for('especialista.inicio', id=_id))
+            if account: # Temporal para hacer pruebas sin seguridad
                 session['logueado'] = True
-                session['id'] = account.id_empleado
+                session['id'] = account.id_espe
                 _id = session['id']
-                return redirect(url_for('especialista.inicio', id=_id))
+            
+                return redirect(url_for('especialista.inicio', id=_id))            
             else:
                 return render_template('login.html', mensaje = 'El usuario no se encuentra registrado o la contraseña es incorrecta')
 

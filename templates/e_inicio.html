@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block title %}Home Especialista{% endblock %}
+
+{% block body %}
+
+<!-- <a href="{{url_for('especialista.registro', id=get_esp.id_espe)}}">Pacientes</a>  -->
+
+<!-- data from the person -->
+<h1>Especialista</h1>
+<h1>Bienvenido de Nuevo</h1>
+<span>{{get_esp.pri_nombre}} {{get_esp.pri_apellido}}</span>
+<!-- // -->
+
+<h2>---------------------------</h2>
+<h2>Mis Pacientes</h2>
+<h3>{{ formatted_date }}</h3>
+
+<a href="{{ url_for('especialista.perfil', id=get_esp.id_espe)}}">Perfil</a>
+
+<!-- Resultados de busqueda -->
+<ul>
+    {{ date }}
+    {% for paciente in get_pac %}
+      <li>
+        <span>{{paciente.pri_nombre}}</span>
+        <span>{{paciente.pri_apellido}}</span>
+
+        <a href="/#">></a>
+
+    </li>
+    {% endfor %}
+</ul>
+<!-- // -->
+ 
+{% endblock %}

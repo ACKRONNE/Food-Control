@@ -109,6 +109,11 @@ def inicio(id):
 @pac.route('/perfil/<id>', methods=["GET"])
 def perfil(id):
     paciente = Paciente.query.get(id)
+
+    if paciente is None:
+        flash("Paciente no encontrado", "danger")
+        return redirect(url_for('index.index'))
+    
     return render_template("p_perfil.html", id=id, paciente=paciente)
 # // >
 

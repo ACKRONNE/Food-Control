@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block title %}Profile Paciente{% endblock %}
+
+{% block body %}
+
+    <a href="{{ url_for('especialista.inicio', id=get_esp.id_espe) }}">Volver</a>
+
+        <p>Nombre {{get_esp.pri_nombre}} {{get_esp.seg_nombre}}</p>
+        <p>Apellidos {{get_esp.pri_apellido}} {{get_esp.seg_apellido}}</p>
+        <p>Sexo 
+            {% if get_esp.sexo == "F" %}
+            Femenino
+            {% elif get_esp.sexo == "M" %}
+                Masculino
+            {% elif get_esp.sexo == "O" %}
+                Otro
+            {% endif %}
+        </p>
+        <p>Correo {{get_esp.correo}}</p> 
+        <p>Telefono {{get_esp.telefono}}</p> 
+        <p>Especialidad {{get_esp.especialidad}}</p>
+        <p>Clave *******</p> 
+
+
+        <a href="{{ url_for('especialista.perfil', id=get_esp.id_espe) }}">Editar Perfil</a>
+        <form action="{{ url_for('especialista.perfil', id=get_esp.id_espe) }}" method="post">
+            <input type="submit" value="Eliminar Cuenta">
+        </form>
+        <a href="{{ url_for('index.logout', id=get_esp.id_espe) }}">Cerrar Sesion</a>
+{% endblock %}

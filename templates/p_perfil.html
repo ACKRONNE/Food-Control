@@ -1,10 +1,8 @@
 {% extends 'layout.html' %}
 
-{% block title %}Profile Paciente{% endblock %}
+{% block title %}Perfil Paciente{% endblock %}
 
 {% block body %}
-
-    <!-- FIXME: Falta update y delete -->
 
     <a href="{{ url_for('paciente.inicio', id=paciente.id_paciente) }}">Volver</a>
 
@@ -21,7 +19,7 @@
         </p>
         <p>Correo {{paciente.correo}}</p> 
         <p>Telefono {{paciente.telefono}}</p> 
-        <p>Edad {{paciente.fecha_nacimiento}}</p>
+        <p id="edad">Edad </p>
         <p>Clave *******</p> 
 
 
@@ -30,4 +28,23 @@
             <input type="submit" value="Eliminar Cuenta">
         </form>
         <a href="{{ url_for('index.logout', id=paciente.id_paciente) }}">Cerrar Sesion</a>
+
+        <script>
+            // Suponiendo que la fecha de nacimiento está en el formato 'YYYY-MM-DD'
+            const fechaNacimiento = "{{ paciente.fecha_nacimiento }}"; // Reemplaza esto con paciente.fecha_nacimiento
+    
+            function calcularEdad(fecha) {
+                const hoy = new Date();
+                const nacimiento = new Date(fecha);
+                let edad = hoy.getFullYear() - nacimiento.getFullYear();
+                const mes = hoy.getMonth() - nacimiento.getMonth();
+                if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+                    edad--;
+                }
+                return edad;
+            }
+    
+            const edad = calcularEdad(fechaNacimiento);
+            document.getElementById('edad').textContent = `Edad: ${edad}`;
+        </script>
 {% endblock %}
