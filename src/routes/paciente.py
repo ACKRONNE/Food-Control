@@ -73,6 +73,7 @@ def inicio(id):
     tipo = (
         db.session.query(Comida.tipo, Comida.fecha_ini)
         .filter(Comida.id_paciente == id)
+        .filter(Comida.comentario != None)
     ).all()
     # //
 
@@ -200,8 +201,8 @@ def addFood(id):
             db.session.add(new_comida)
             db.session.commit()
 
-            print("Comida Agregada con exito")
-            flash("Comida Agregada con exito")
+            print("Comida agregada con exito")
+            flash("Comida agregada correctamente", "success")
 
             _alimento = request.form.getlist('alimentos[]')
 

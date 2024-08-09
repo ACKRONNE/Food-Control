@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
+from scipy.fft import idctn
 from werkzeug.security import generate_password_hash
 from sqlalchemy.orm import aliased
 from sqlalchemy import cast, Date, distinct, select
@@ -149,3 +150,79 @@ def detallePaciente(id_espe, id_pac):
         return redirect(url_for('especialista.inicio', id=id_espe))
     
     return render_template('e_detalle_paciente.html', get_pac=get_pac, get_esp=get_esp)
+# //
+
+# Anadir Comida <
+@esp.route('/anadir_comida/<int:id>', methods=['GET','POST'])
+def addFood(id):
+    get_esp = db.session.query(Especialista).filter(Especialista.id_espe == id).first()
+    get_ali = db.session.query(Alimento).all()
+
+    get_pac = db.session.query(
+        Paciente.id_paciente,
+        Paciente.pri_nombre,
+        Paciente.pri_apellido
+    ).select_from(Comida)\
+    .join(Paciente, Comida.id_paciente == Paciente.id_paciente)\
+    .join(Especialista, Comida.id_espe == Especialista.id_espe)\
+    .filter(
+        Especialista.id_espe == id
+    ).distinct().all()
+
+    if get_esp is None:
+        flash("Paciente no encontrado", "danger")
+        return redirect(url_for('especialista.inicio', id=id))
+
+    if request.method == "POST":
+        try:
+            tipo_comida = request.form['tipo-comida']
+            id_paciente = request.form['id-paciente']
+            fecha_ini = request.form['fecha-ini']
+            fecha_fin = request.form['fecha-fin']
+              # Verificar que todos los datos necesarios están presentes
+            
+            print(f"tipo_comida: {tipo_comida}")
+            print(f"id_paciente: {id_paciente}")
+            print(f"fecha_ini: {fecha_ini}")
+            print(f"fecha_fin: {fecha_fin}")
+
+            new_comida = Comida(
+                id_paciente,
+                get_esp.id_espe,
+                fecha_ini,
+                tipo_comida,
+                fecha_fin
+            )
+            db.session.add(new_comida)
+            db.session.commit()
+            print("Comida agregada con exito")
+            flash("Comida agregada correctamente", "success")
+
+            _alimmento = request.form.getlist('alimentos[]')
+
+            for alimento in _alimmento:
+                if alimento:
+                    new_ac = AC(
+                        id_paciente,
+                        get_esp.id_espe,
+                        new_comida.fecha_ini,
+                        alimento
+                    )
+                    db.session.add(new_ac)
+
+                    print("Registro de alimento agregado con exito")
+                    flash("Registro de alimento agregado con exito")
+    
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            flash("Ocurrio un error al agregar la comida", "danger")
+            print(f"Error: {e}")      
+        finally:
+            db.session.close()
+
+        return redirect(url_for('especialista.inicio', id=id))
+
+    else:
+        return render_template('e_add_comida.html', id=id, get_pac=get_pac, get_esp=get_esp, get_ali=get_ali)
+# //

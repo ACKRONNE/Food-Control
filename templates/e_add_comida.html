@@ -1,0 +1,106 @@
+{% extends 'layout.html' %}
+
+{% block title %}Agregar Comida{% endblock %}
+
+{% block body %}
+  
+  <a href="{{ url_for('especialista.inicio', id=get_esp.id_espe) }}">Volver</a>
+  <h1>Agregar Comida</h1>
+
+  <form action="{{ url_for('especialista.addFood', id=get_esp.id_espe) }}" method="POST" class="form-control">
+    
+    <div class="form-group">
+      <div required>
+      <label><input type="radio" name="tipo-comida" value="D">Desayuno</label><br>
+      <label><input type="radio" name="tipo-comida" value="A">Almuerzo</label><br>
+      <label><input type="radio" name="tipo-comida" value="C">Cena</label><br>
+      <label><input type="radio" name="tipo-comida" value="M">Merienda</label><br>
+      </div>
+    </div>
+        
+    <div class="form-group">
+        <label>Pacientes</label>
+        <select name="id-paciente">
+            <option value="">Selecciona el nombre</option>
+            {% for paciente in get_pac %}
+                <option value="{{ paciente.id_paciente }}">{{ paciente.pri_nombre }} {{ paciente.pri_apellido }}</option>
+            {% endfor %}
+        </select>
+    </div>
+        
+    <!-- Alimentos -->
+    <div class="alimentos" id="alimentos">
+        <div class="row group">
+            <div class="column">
+                <div class="form-group">
+                    <label>Alimento</label>
+                    <select id="alimentos-select" name="alimentos[]">
+                        <option value="">Selecciona el nombre</option>
+                        {% for alimento in get_ali %}
+                            <option value="{{ alimento.id_alimento }}">{{ alimento.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" id="add-alimento">Agregar otro Alimento</button>
+                </div>
+            </div>
+        </div>
+        <ul id="selected-alimentos">
+            {% for alimento in selected_alimentos %}
+                <li data-id="{{ alimento.id_alimento }}">
+                    {{ alimento.nombre }}
+                    <input type="hidden" name="alimentos[]" value="{{ alimento.id_alimento }}">
+                    <button type="button" class="remove-alimento">Eliminar</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- // -->
+    
+    <div class="form-group">
+        <h2>Fecha inicio</h2>
+        <input type="datetime-local" id="fecha-ini" name="fecha-ini" required>
+    </div>
+
+    <div class="form-group">
+        <h2>Fecha Fin</h2>
+        <input type="datetime-local" id="fecha-fin" name="fecha-fin" required>
+    </div>
+
+    <div class="button-container">
+      <button class="submit-btn" type="submit">Agregar Comida</button>
+    </div>
+  </form>
+
+<!-- ZONA DE SCRIPTS -->
+<script>
+
+// Para que funcione la entrada multiple de datos en alimento
+document.getElementById('add-alimento').addEventListener('click', function() {
+    var select = document.getElementById('alimentos-select');
+    var selectedValue = select.value;
+    var selectedText = select.options[select.selectedIndex].text;
+
+    if (selectedValue) {
+        var ul = document.getElementById('selected-alimentos');
+        var li = document.createElement('li');
+        li.setAttribute('data-id', selectedValue);
+        li.innerHTML = selectedText + ' <input type="hidden" name="alimentos[]" value="' + selectedValue + '"> <button type="button" class="remove-alimento">Eliminar</button>';
+        ul.appendChild(li);
+
+        select.value = '';
+    } else {
+        alert("Por favor selecciona un alimento válido.");
+    }
+});
+
+document.getElementById('selected-alimentos').addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('remove-alimento')) {
+        var li = e.target.parentElement;
+        li.parentElement.removeChild(li);
+    }
+});
+// // 
+
+</script>
+<!-- // SCRIPTS -->
+{% endblock body %}

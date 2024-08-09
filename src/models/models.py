@@ -90,21 +90,23 @@ class Comida(db.Model):
     id_espe = Column(Integer, ForeignKey('especialistas.id_espe'), nullable=False)
     fecha_ini = Column(DateTime, nullable=False)
     tipo = Column(String(1), nullable=False)
-    satisfaccion = Column(String(255), nullable=False)
+    satisfaccion = Column(String(255))
     comentario = Column(String(255))
+    fecha_fin = Column(DateTime)
 
     __table_args__ = (
         PrimaryKeyConstraint('id_paciente', 'id_espe', 'fecha_ini'),
         CheckConstraint("tipo IN ('D', 'A', 'C', 'M')", name='check_tipo'),
     )
 
-    def __init__(self, id_paciente, id_espe, fecha_ini, tipo, satisfaccion, comentario=None):
+    def __init__(self, id_paciente, id_espe, fecha_ini, tipo, satisfaccion=None, comentario=None, fecha_fin=None):
         self.id_paciente = id_paciente
         self.id_espe = id_espe
         self.fecha_ini = fecha_ini
         self.tipo = tipo
         self.satisfaccion = satisfaccion
         self.comentario = comentario
+        self.fecha_fin = fecha_fin
 # //
 
 # 5
