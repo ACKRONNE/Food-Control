@@ -179,19 +179,15 @@ def addFood(id):
             id_paciente = request.form['id-paciente']
             fecha_ini = request.form['fecha-ini']
             fecha_fin = request.form['fecha-fin']
-              # Verificar que todos los datos necesarios están presentes
-            
-            print(f"tipo_comida: {tipo_comida}")
-            print(f"id_paciente: {id_paciente}")
-            print(f"fecha_ini: {fecha_ini}")
-            print(f"fecha_fin: {fecha_fin}")
-
+    
             new_comida = Comida(
                 id_paciente,
                 get_esp.id_espe,
                 fecha_ini,
                 tipo_comida,
-                fecha_fin
+                None,
+                None,
+                fecha_fin,
             )
             db.session.add(new_comida)
             db.session.commit()

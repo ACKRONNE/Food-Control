@@ -175,6 +175,16 @@ def deleteAccount(id):
 def addFood(id):     
 
     get_pac = db.session.query(Paciente).filter(Paciente.id_paciente == id).first()
+    get_esp = db.session.query(
+        Especialista.id_espe,
+        Especialista.pri_nombre,
+        Especialista.pri_apellido
+    ).select_from(Comida)\
+    .join(Paciente, Comida.id_paciente == Paciente.id_paciente)\
+    .join(Especialista, Comida.id_espe == Especialista.id_espe)\
+    .filter(
+        Paciente.id_paciente == id
+    ).distinct().all()
     get_ali = db.session.query(Alimento).all()
 
     if get_pac is None:
@@ -187,8 +197,7 @@ def addFood(id):
             satisfaccion = request.form['satisfaccion']
             comentario = request.form['comentario']
             fecha_ini = request.form['fecha-ini']
-
-            id_espe = 1  # FIXME: Reemplazar esto con el ID correcto del especialista
+            id_espe = request.form['id-espe']
 
             new_comida = Comida(
                 get_pac.id_paciente,
@@ -229,7 +238,7 @@ def addFood(id):
 
         return redirect(url_for('paciente.inicio', id=id))
     
-    return render_template('p_add_comida.html', id=id, get_pac=get_pac, get_ali=get_ali)
+    return render_template('p_add_comida.html', id=id, get_pac=get_pac, get_ali=get_ali, get_esp=get_esp)
 # // >
 
 # Detalle de comida <
@@ -298,7 +307,7 @@ def updateFood(id, date):
         Comida.fecha_ini == date, 
         Comida.id_paciente == id,
         AC.fecha_ini == Comida.fecha_ini
-    ).distinct().all()       
+    ).distinct().all()
              
     if request.method == 'POST':
         try:
