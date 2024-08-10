@@ -226,3 +226,82 @@ def addFood(id):
     else:
         return render_template('e_add_comida.html', id=id, get_pac=get_pac, get_esp=get_esp, get_ali=get_ali)
 # //
+
+# Detalle Comida <
+@esp.route('/detalles_comidas/<id_espe>/<id_pac>', methods=['GET'])
+def foodDetail(id_espe, id_pac):
+    get_esp = db.session.query(Especialista).filter(Especialista.id_espe == id_espe).first()
+    get_pac = db.session.query(Paciente).filter(Paciente.id_paciente == id_pac).first()
+    datos = db.session.query(
+        Alimento.nombre,
+        Alimento.cantidad,
+        Alimento.tipo.label('tipo_alimento'),
+        Comida.fecha_ini,
+        Comida.tipo,
+        Comida.satisfaccion,
+        Comida.comentario
+    ).select_from(Comida).\
+    join(AC, Comida.id_paciente == AC.id_paciente).\
+    join(Alimento, Alimento.id_alimento == AC.id_alimento).\
+    join(Especialista, Comida.id_espe == Especialista.id_espe).\
+    join(Paciente, Comida.id_paciente == Paciente.id_paciente).\
+    filter(
+        Comida.id_espe == id_espe, 
+        Comida.id_paciente == id_pac,
+    ).distinct().all()
+
+    return render_template('e_detalle_comida.html', get_esp=get_esp, get_pac=get_pac, datos=datos)
+# //
+
+# Modificar Comida
+@esp.route('/modificar_comida/<id_espe>/<id_pac>/<fecha_ini>', methods=['GET','POST'])
+def updateFood(id_espe, id_pac, fecha_ini):
+    get_esp = db.session.query(Especialista).filter(Especialista.id_espe == id_espe).first()
+    get_pac = db.session.query(Paciente).filter(Paciente.id_paciente == id_pac).first()
+    get_comida = db.session.query(Comida).filter(Comida.id_paciente == id_pac, Comida.id_espe == id_espe, Comida.fecha_ini == fecha_ini).first()
+    get_ac = db.session.query(AC).filter(AC.id_paciente == id_pac, AC.id_espe == id_espe, AC.fecha_ini == fecha_ini).all()
+    get_ali = db.session.query(Alimento).all()
+
+    if get_comida is None:
+        flash("Comida no encontrada", "danger")
+        return redirect(url_for('especialista.inicio', id=id_espe))
+
+    if request.method == "POST":
+        try:
+            tipo_comida = request.form['tipo-comida']
+            fecha_ini = request.form['fecha-ini']
+            fecha_fin = request.form['fecha-fin']
+            # Verificar que todos los datos necesarios están presentes
+            get_comida.tipo_comida = tipo_comida
+            get_comida.fecha_ini = fecha_ini
+            get_comida.fecha_fin = fecha_fin
+
+            db.session.commit()
+            flash("Comida modificada correctamente", "success")
+
+            _alimmento = request.form.getlist('alimentos[]')
+
+            for alimento in _alimmento:
+                if alimento:
+                    new_ac = AC(
+                        id_pac,
+                        id_espe,
+                        fecha_ini,
+                        alimento
+                    )
+                    db.session.add(new_ac)
+                    print("Registro de alimento agregado con exito")
+                    flash("Registro de alimento agregado con exito")
+    
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            flash("Ocurrio un error al modificar la comida", "danger")
+            print(f"Error: {e}")      
+        finally:
+            db.session.close()
+
+        return redirect(url_for('especialista.inicio', id=id_espe))
+
+    else:
+        return render_template('e_modificar_comida.html', get_esp=get_esp, get_pac=get_pac, get_comida=get_comida)

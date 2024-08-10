@@ -359,7 +359,6 @@ def updateFood(id, date):
 @pac.route('/eliminar_alimento/<int:id_alimento>/<date>/<int:id>', methods=['DELETE'])
 def eliminar_alimento(id_alimento, date, id):
     try:
-        print(id_alimento, date, id)
         ac_record = db.session.query(AC).filter(
             AC.id_alimento == id_alimento,
             AC.id_paciente == id,
@@ -377,7 +376,6 @@ def eliminar_alimento(id_alimento, date, id):
     finally:
         db.session.close()
 # // >
-# >
 
 # Eliminar Comida <
 @pac.route('/eliminar_comida/<id>/<date>', methods=['GET', 'POST'])

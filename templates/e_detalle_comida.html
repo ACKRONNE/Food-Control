@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+
+{% block title %}Detalle Comida{% endblock %}
+
+{% block body %}
+
+<!-- Static title -->
+<a href="{{ url_for('especialista.inicio', id=get_esp.id_espe) }}">Volver</a>
+<a href="{{ url_for('especialista.perfil', id=get_esp.id_espe) }}">Perfil</a>
+  <h1>Detalle Comida</h1>
+  <!-- // -->
+   {{ get_pac.pri_nombre }} {{ get_pac.pri_apellido }}
+    <div></div>
+
+    <div><----------------------------------------------------></div>
+    {% for datos in datos %}
+        {{ datos.fecha_ini }}
+
+        <!-- Formato del tipo de Comida -->
+        {% if datos.tipo == "D" %}
+            <h3>Desayuno</h3>
+        {% elif datos.tipo == "A" %}
+            <h3>Almuerzo</h3>
+        {% elif datos.tipo == "C" %}
+            <h3>Cena</h3>
+        {% elif datos.tipo == "M" %}
+            <h3>Merienda</h3>
+        {% endif %}
+        <!-- // -->
+
+        <div class="form-group" value="">
+            <label>Proteinas</label>
+                {% if datos.tipo_alimento == "Proteina" %}
+                <li>{{ datos.nombre }} {{ datos.cantidad }}</li>
+                {% endif %}
+        </div>       
+        
+        <div>-----------</div>
+        
+        <div class="form-group" value="">
+            <label>Carbohidratos</label>
+                {% if datos.tipo_alimento == "Carbohidrato" %}
+                    <li>{{ datos.nombre }} {{ datos.cantidad }}</li>
+                {% endif %}
+        </div>
+        
+        <div>-----------</div>
+        
+        <div class="form-group" value="">
+            <label>Vegetales</label>
+                {% if datos.tipo_alimento == "Vegetal" %}
+                    <li>{{ datos.nombre }} {{ datos.cantidad }}</li>
+                {% endif %}
+        </div>
+        
+        <div>-----------</div>
+        
+        <div class="form-group" value="">
+            <label>Frutas</label>
+                {% if datos.tipo_alimento == "Fruta" %}
+                    <li>{{ datos.nombre }} {{ datos.cantidad }}</li>
+                {% endif %}
+        </div>
+        
+        <div>-----------</div>
+        
+        <div class="form-group" value="">
+            <label>Grasas</label>
+                {% if datos.tipo_alimento == "Grasa" %}
+                    <li>{{ datos.nombre }} {{ datos.cantidad }}</li>
+                {% endif %}
+        </div>
+        
+        <div>-----------</div>
+        
+        <div class="form-group" value="">
+            <label>Bebidas</label>
+                {% if datos.tipo_alimento == "Bebida" %}
+                    <li>{{ datos.nombre }} {{ datos.cantidad }}</li>
+                {% endif %}
+        </div>
+        
+        <div>-----------</div>
+        
+        <div class="form-group" value="">
+            <label>Dulce</label>
+                {% if datos.tipo_alimento == "Dulce" %}
+                    <li>{{ datos.nombre }} {{ datos.cantidad }}</li>
+                {% endif %}
+        </div>
+        
+        <div>-----------</div>
+        
+        <div class="form-group" value="">
+            <label>Otros</label>
+                {% if datos.tipo_alimento == "Otros" %}
+                    <li>{{ datos.nombre }} {{ datos.cantidad }}</li>
+                {% endif %}
+        </div>
+
+        <h1>Satisfaccion</h1>
+        <label>{{ datos.satisfaccion }}</label>
+
+        <h1>Comentario</h1>
+        <label>{{ datos.comentario }}</label>
+        <div><----------------------------------------------------></div>
+    {% endfor %}
+{% endblock %}

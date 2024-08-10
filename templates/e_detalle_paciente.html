@@ -24,7 +24,7 @@
     </div>
   <div id="edad"></div>
 
-  <a href="/#">Recetas</a>
+  <a href="{{ url_for('especialista.foodDetail', id_espe=get_esp.id_espe, id_pac=get_pac.id_paciente )}}">Recetas</a>
 
 
   <script>
